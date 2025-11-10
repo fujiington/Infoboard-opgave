@@ -1,7 +1,7 @@
 # Infoboard-opgave
 nemt
 viktoriia
-jakob
+jakob Bro
 silas
 lukas
 troels
