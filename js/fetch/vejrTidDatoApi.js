@@ -21,12 +21,11 @@ function updateCopenhagenTime() {
   }
 }
 
-// Run immediately and then every 60 seconds
 updateCopenhagenTime();
 setInterval(updateCopenhagenTime, 1 * 1000);
 
 
-// --- Weather API ---
+// Weather API
 const vejrurl = "https://api.openweathermap.org/data/2.5/weather?q=Aalborg&appid=4d58d6f0a435bf7c5a52e2030f17682d&units=metric";
 
 async function getWeather() {
@@ -67,7 +66,6 @@ async function displayWeather() {
   }
 }
 
-// Run when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', displayWeather);
 } else {

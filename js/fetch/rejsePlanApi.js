@@ -1,4 +1,3 @@
-// --- Rejseplanen Departures (Live 4 Next Buses) ---
 const rejsePlanUrl =
   "https://www.rejseplanen.dk/api/nearbyDepartureBoard?accessId=5b71ed68-7338-4589-8293-f81f0dc92cf2&originCoordLat=57.048731&originCoordLong=9.968186&format=json";
 
@@ -42,7 +41,6 @@ async function displayDepartures() {
       return;
     }
 
-    // --- Convert times safely ---
     const now = new Date();
     const timezone = "Europe/Copenhagen";
 
@@ -52,7 +50,6 @@ async function displayDepartures() {
         const timeStr = dep.rtTime || dep.time;
         if (!timeStr) return null;
 
-        // Parse local Copenhagen time correctly
         const [hours, minutes] = timeStr.split(":").map(Number);
         const depDateTime = new Date(
           new Date(dateStr).setHours(hours, minutes, 0, 0)
@@ -86,7 +83,6 @@ async function displayDepartures() {
             ? `<span style="color:red;">(Delayed)</span>`
             : "";
 
-        // Calculate minutes until departure
         const minutesLeft = Math.round(
           (dep.depDateTime - dep.localNow) / 60000
         );
@@ -108,7 +104,6 @@ async function displayDepartures() {
   }
 }
 
-// --- Auto Refresh ---
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", displayDepartures);
 } else {

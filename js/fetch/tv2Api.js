@@ -1,4 +1,3 @@
-// --- DR News Feed (One Article at a Time) ---
 const url = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.dr.dk%2Fnyheder%2Fservice%2Ffeeds%2Fallenyheder%23";
 
 async function getNews() {
@@ -19,7 +18,6 @@ async function displayNews() {
     const data = await getNews();
     console.log("Full API data:", JSON.stringify(data, null, 2));
 
-    // Extract items
     let articles = [];
     if (Array.isArray(data.items)) {
       articles = data.items;
@@ -37,7 +35,6 @@ async function displayNews() {
 
     let index = 0;
 
-    // Function to render one article
     function showArticle(i) {
       const article = articles[i];
       const title = article.title || "Untitled";
@@ -58,10 +55,8 @@ async function displayNews() {
       `;
     }
 
-    // Show first article
     showArticle(index);
 
-    // Change article every 5 minutes (300000 ms)
     setInterval(() => {
       index = (index + 1) % articles.length;
       showArticle(index);
@@ -73,7 +68,6 @@ async function displayNews() {
   }
 }
 
-// Run when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', displayNews);
 } else {
