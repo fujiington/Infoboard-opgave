@@ -78,7 +78,7 @@ function displaySchedule(data) {
             html += `<h2 class="section-title">⏳ Næste Lektion</h2>`;
             html += makeCard(next, false);
         } else {
-            html = `<h2 class="section-title">🎓 Ingen flere lektioner i dag</h2>`;
+            html = `<h2 class="section-title">🎓 Ikke flere lektioner i dag</h2>`;
         }
     }
 

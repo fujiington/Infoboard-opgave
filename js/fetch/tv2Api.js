@@ -60,7 +60,7 @@ async function displayNews() {
     setInterval(() => {
       index = (index + 1) % articles.length;
       showArticle(index);
-    }, 300000); // 5 minutes in milliseconds
+    }, 30000); // 5 minutes in milliseconds
 
   } catch (err) {
     console.error("Full error:", err);
