@@ -1,1 +1,0 @@
-import fetchSchedule from './fetch/aktivitetsApi.js';
