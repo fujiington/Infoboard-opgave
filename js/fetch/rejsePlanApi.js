@@ -1,16 +1,16 @@
-const rejsePlanUrl = "https://www.rejseplanen.dk/api/nearbyDepartureBoard?accessId=5b71ed68-7338-4589-8293-f81f0dc92cf2&originCoordLat=57.048731&originCoordLong=9.968186&format=json";
+// --- Rejseplanen Departures (Live 4 Next Buses) ---
+const rejsePlanUrl =
+  "https://www.rejseplanen.dk/api/nearbyDepartureBoard?accessId=5b71ed68-7338-4589-8293-f81f0dc92cf2&originCoordLat=57.048731&originCoordLong=9.968186&format=json";
 
 async function getDepartures() {
   const res = await fetch(rejsePlanUrl);
-  if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
-  
-  const data = await res.json();
-  return data;
+  if (!res.ok)
+    throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+  return res.json();
 }
 
 async function displayDepartures() {
   const container = document.getElementById("departures");
-  
   if (!container) {
     console.error("Element with id 'departures' not found!");
     return;
@@ -20,19 +20,19 @@ async function displayDepartures() {
     const data = await getDepartures();
     console.log("Full API data:", JSON.stringify(data, null, 2));
 
-    // Check different possible data structures for Rejseplanen API
+    // --- Normalize structure ---
     let departures = [];
-    
-    if (Array.isArray(data)) {
-      departures = data;
+    if (data.DepartureBoard?.Departure) {
+      departures = Array.isArray(data.DepartureBoard.Departure)
+        ? data.DepartureBoard.Departure
+        : [data.DepartureBoard.Departure];
     } else if (data.Departure) {
       departures = Array.isArray(data.Departure) ? data.Departure : [data.Departure];
     } else if (data.departures) {
-      departures = Array.isArray(data.departures) ? data.departures : [data.departures];
-    } else if (data.DepartureBoard && data.DepartureBoard.Departure) {
-      departures = Array.isArray(data.DepartureBoard.Departure) ? data.DepartureBoard.Departure : [data.DepartureBoard.Departure];
+      departures = Array.isArray(data.departures)
+        ? data.departures
+        : [data.departures];
     } else {
-      // If structure is completely different, show raw data
       container.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
       return;
     }
@@ -42,36 +42,77 @@ async function displayDepartures() {
       return;
     }
 
-    container.innerHTML = departures.map(dep => {
-      // Common Rejseplanen API properties
-      const name = dep.name || dep.line || dep.trainName || "Unknown";
-      const time = dep.time || dep.rtTime || dep.scheduledTime || "";
-      const date = dep.date || "";
-      const direction = dep.direction || dep.finalStop || "";
-      const stop = dep.stop || dep.stopName || "";
-      const track = dep.track || dep.rtTrack || "";
-      const type = dep.type || "";
-      
-      return `
-        <div class="card">
-          <h3>${name} ${type ? `(${type})` : ''}</h3>
-          ${stop ? `<div class="stop"><strong>Stop:</strong> ${stop}</div>` : ''}
-          ${time ? `<div class="time"><strong>Time:</strong> ${time}</div>` : ''}
-          ${date ? `<div class="date"><strong>Date:</strong> ${date}</div>` : ''}
-          ${direction ? `<div class="direction"><strong>Direction:</strong> ${direction}</div>` : ''}
-          ${track ? `<div class="track"><strong>Track:</strong> ${track}</div>` : ''}
+    // --- Convert times safely ---
+    const now = new Date();
+    const timezone = "Europe/Copenhagen";
+
+    const futureDepartures = departures
+      .map(dep => {
+        const dateStr = dep.date || new Date().toISOString().split("T")[0];
+        const timeStr = dep.rtTime || dep.time;
+        if (!timeStr) return null;
+
+        // Parse local Copenhagen time correctly
+        const [hours, minutes] = timeStr.split(":").map(Number);
+        const depDateTime = new Date(
+          new Date(dateStr).setHours(hours, minutes, 0, 0)
+        );
+
+        // Fix potential timezone mismatch by shifting to local Copenhagen time
+        const offset = new Date().toLocaleString("en-US", { timeZone: timezone });
+        const localNow = new Date(offset);
+
+        return { ...dep, depDateTime, localNow };
+      })
+      .filter(dep => dep && dep.depDateTime > dep.localNow)
+      .sort((a, b) => a.depDateTime - b.depDateTime)
+      .slice(0, 4);
+
+    // --- Render ---
+    if (!futureDepartures.length) {
+      container.innerHTML = "<p>No upcoming departures.</p>";
+      return;
+    }
+
+    container.innerHTML = futureDepartures
+      .map(dep => {
+        const name = dep.name || dep.line || "Unknown";
+        const time = dep.rtTime || dep.time || "";
+        const direction = dep.direction || dep.finalStop || "";
+        const stop = dep.stop || dep.stopName || "";
+        const type = dep.type || "";
+        const delay =
+          dep.rtTime && dep.rtTime !== dep.time
+            ? `<span style="color:red;">(Delayed)</span>`
+            : "";
+
+        // Calculate minutes until departure
+        const minutesLeft = Math.round(
+          (dep.depDateTime - dep.localNow) / 60000
+        );
+
+        return `
+        <div class="card departure-card">
+          <h3>${name} ${type ? `(${type})` : ""}</h3>
+          ${direction ? `<div><strong>Direction:</strong> ${direction}</div>` : ""}
+          ${stop ? `<div><strong>Stop:</strong> ${stop}</div>` : ""}
+          ${time ? `<div><strong>Time:</strong> ${time} ${delay}</div>` : ""}
+          <div><strong>Leaves in:</strong> ${minutesLeft} min</div>
         </div>
       `;
-    }).join("");
+      })
+      .join("");
   } catch (err) {
     console.error("Full error:", err);
     container.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
   }
 }
 
-// Run when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', displayDepartures);
+// --- Auto Refresh ---
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", displayDepartures);
 } else {
   displayDepartures();
 }
+
+setInterval(displayDepartures, 30 * 1000); // update every 30 seconds
