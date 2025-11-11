@@ -1,7 +1,7 @@
-const url = "https://infoskaerm.techcollege.dk/umbraco/api/content/getcanteenmenu/?type=json";
+const menuUrl = "https://infoskaerm.techcollege.dk/umbraco/api/content/getcanteenmenu/?type=json";
 
 async function getCanteenMenu() {
-  const res = await fetch(url);
+  const res = await fetch(menuUrl);
   if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
 
   const contentType = res.headers.get("content-type") || "";
