@@ -1,6 +1,6 @@
-//her er tids og dato API'et
+// --- Time & Date API ---
 function getCopenhagenTime() {
-  const copenhagenTime = new Date().toLocaleString('en-US', {
+  return new Date().toLocaleString('en-US', {
     timeZone: 'Europe/Copenhagen',
     year: 'numeric',
     month: '2-digit',
@@ -10,21 +10,23 @@ function getCopenhagenTime() {
     second: '2-digit',
     hour12: false
   });
-
-  return copenhagenTime;
 }
 
-
-const container = document.getElementById("getCopenhagenTime");
-if (container) {
-  container.textContent = getCopenhagenTime();
-} else {
-  console.error("Element with id 'getCopenhagenTime' not found!");
+function updateCopenhagenTime() {
+  const container = document.getElementById("getCopenhagenTime");
+  if (container) {
+    container.textContent = getCopenhagenTime();
+  } else {
+    console.error("Element with id 'getCopenhagenTime' not found!");
+  }
 }
 
+// Run immediately and then every 60 seconds
+updateCopenhagenTime();
+setInterval(updateCopenhagenTime, 1 * 1000);
 
 
-//Her kommer vejr API'et
+// --- Weather API ---
 const vejrurl = "https://api.openweathermap.org/data/2.5/weather?q=Aalborg&appid=4d58d6f0a435bf7c5a52e2030f17682d&units=metric";
 
 async function getWeather() {
@@ -47,7 +49,6 @@ async function displayWeather() {
     const data = await getWeather();
     console.log("Full API data:", JSON.stringify(data, null, 2));
 
-    // OpenWeatherMap structure
     const city = data.name || "Unknown";
     const temp = data.main?.temp || "N/A";
     const icon = data.weather?.[0]?.icon || "";
@@ -58,6 +59,7 @@ async function displayWeather() {
         <h2>${city}</h2>
         ${icon ? `<img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather icon">` : ''}
         <div class="main-temp">${temp}°C</div>
+      </div>
     `;
   } catch (err) {
     console.error("Full error:", err);
