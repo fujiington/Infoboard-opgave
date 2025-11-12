@@ -5,71 +5,92 @@
   padding: 0;
   font-family: "Inter", sans-serif;
 }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* prevent scrollbar */
+}
+
 body {
-  min-height: 100vh;
   display: grid;
+  height: 100vh;
+  width: 100vw;
 
+  /* Updated grid layout */
   grid-template-areas:
-    "departures getCopenhagenTime news"
-    "departures weather news"
-    "menu content content";
+    "departures getCopenhagenTime content"
+    "news weather content"
+    "news menu content";
 
+  /* Columns: left, middle, right */
+  grid-template-columns: 1fr 0.9fr 1.3fr;
 
-  grid-template-columns: 1fr 1fr 1.2fr;
-  grid-template-rows: auto auto 1fr;
+  /* Rows: proportional heights */
+  grid-template-rows: 1fr 0.6fr 1.4fr;
+
   gap: 1.5rem;
-  padding: 2rem;
+  padding: 1.5rem;
 
-  background: 
+  background:
     linear-gradient(to bottom right, rgba(174, 21, 21, 0.404), rgba(186, 156, 24, 0.584)),
     url("../images/42-76299788.jpg.png") center/cover no-repeat;
   color: #111;
 }
-/* === GENEREL CARD-STIL === */
+
+/* === GENERAL CARD STYLE === */
 #content,
 #menu,
 #departures,
 #news,
 #getCopenhagenTime,
 #weather {
-  border-radius: 61px;
+  border-radius: 40px;
   background: rgba(255, 255, 255, 0.79);
-  box-shadow: 0 0 0 12px rgba(0, 0, 0, 0.10);
-
   border: 2px solid rgba(255, 255, 255, 0.8);
-box-shadow:
-  inset 0 0 10px rgba(255, 255, 255, 0.4),
-  0 0 20px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+  box-shadow:
+    inset 0 0 8px rgba(255, 255, 255, 0.4),
+    0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-#menu .card {
-   display: flex;
-height: 31px;
-padding: 4px 15px;
-align-items: center;
-gap: -1px;
-align-self: stretch;
-gap: 10px;
-}
-#menu .card .day {
-  font-weight: bold;
-  text-align: center;
-}
-#menu .card .dishes {
-    text-align: center;
+/* === GRID AREA ASSIGNMENTS === */
+#departures { grid-area: departures; }
+#getCopenhagenTime { grid-area: getCopenhagenTime; }
+#weather { grid-area: weather; }
+#menu { grid-area: menu; }
+#news { grid-area: news; }
+#content { grid-area: content; }
+
+/* === SIZE TWEAKS === */
+/* Make weather smaller */
+#weather {
+  transform: scale(0.9);
+  align-self: center;
+  justify-self: center;
 }
 
-/* === GRID AREA TILDELING === */
-#departures { grid-area: departures; }       /* Bus-tider */
-#getCopenhagenTime { grid-area: getCopenhagenTime; } /* Ur + dato */
-#news { grid-area: news; }                   /* Nyheder */
-#menu { grid-area: menu; }                   /* Ugens menu */
-#weather { grid-area: weather; }             /* Vejr */
-#content { grid-area: content; }                  /* skjult (kan bruges som ekstra sektion senere) */
+/* Make GetCopenhagenTime just a bit larger than weather */
+#getCopenhagenTime {
+  transform: scale(1.05);
+}
 
+/* Make menu fill remaining middle space */
+#menu {
+  align-self: stretch;
+  justify-self: stretch;
+}
 
-/* === TYPOGRAFI === */
+/* Make departures and news meet nicely in the middle */
+#departures,
+#news {
+  align-self: center;
+}
+
+/* === TYPOGRAPHY === */
 h2 {
   font-size: 1.4rem;
   margin-bottom: 0.8rem;
@@ -79,18 +100,50 @@ h2 {
 
 p {
   line-height: 1.4;
-  margin-bottom: .6rem;
+  margin-bottom: 0.6rem;
 }
 
-/* === RESPONSIVE TILPASNING === */
+/* === RESPONSIVE DESIGN === */
 @media (max-width: 1000px) {
   body {
     grid-template-areas:
       "getCopenhagenTime"
       "departures"
-      "menu"
+      "news"
       "weather"
-      "news";
+      "menu"
+      "content";
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1rem;
+    padding: 1rem;
+    overflow: auto; /* allow scroll on small screens */
+  }
+
+  #content,
+  #menu,
+  #departures,
+  #news,
+  #getCopenhagenTime,
+  #weather {
+    width: 100%;
+    height: auto;
+    transform: none;
+  }
+}
+
+/* === SMALL SCREEN OPTIMIZATION === */
+@media (max-width: 600px) {
+  body {
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
   }
 }
