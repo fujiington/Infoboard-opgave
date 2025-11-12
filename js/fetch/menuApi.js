@@ -84,7 +84,7 @@ async function displayMenu() {
       const dishesArray = Array.isArray(dishes) ? dishes : [dishes];
       
       return `
-        <div class="card">
+        <div class="card" id="menu-card">
           <div class="day">${dayName}</div>
           <div class="dishes">${dishesArray.filter(d => d).join("<br>") || "No dishes"}</div>
         </div>
