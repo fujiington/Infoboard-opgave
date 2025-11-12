@@ -92,9 +92,10 @@ function displaySchedule(data) {
     if (currentClasses.length > 0) {
         html += `<h2 class="section-title">📘 Aktuelle Lektioner</h2>`;
         html += currentClasses.map(item => makeCard(item, true)).join('');
-    } else if (nextToday) {
-        html += `<h2 class="section-title">⏳ Næste Lektion I Dag</h2>`;
-        html += makeCard(nextToday, false);
+    } else if (todaysClasses.some(item => new Date(item.StartDate) > now)) {
+    const remainingToday = todaysClasses.filter(item => new Date(item.StartDate) > now);
+    html += `<h2 class="section-title">⏳ Kommende Lektioner I Dag</h2>`;
+    html += remainingToday.map(item => makeCard(item, false)).join('');
     } else if (nextDayClasses.length > 0) {
         html += `<h2 class="section-title">📅 Næste Dags Første Lektioner (${formatDate(nextDayClasses[0].StartDate)})</h2>`;
         html += nextDayClasses.slice(0, 3).map(item => makeCard(item, false)).join('');
