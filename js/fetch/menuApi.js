@@ -50,6 +50,7 @@ async function getCanteenMenu() {
 
 async function displayMenu() {
   const container = document.getElementById("menu");
+
   
   if (!container) {
     console.error("Element with id 'menu' not found!");
@@ -78,12 +79,16 @@ async function displayMenu() {
       return;
     }
 
-    container.innerHTML = days.map(day => {
+    container.innerHTML = 
+    days.map(day => {
       const dayName = day.dayName || day.DayName || day.name || "Unknown Day";
       const dishes = day.dish || day.dishes || day.Dish || day.Dishes || [];
       const dishesArray = Array.isArray(dishes) ? dishes : [dishes];
       
+      
       return `
+      
+      
         <div class="card" id="menu-card">
           <div class="day">${dayName}</div>
           <div class="dishes">${dishesArray.filter(d => d).join("<br>") || "No dishes"}</div>
