@@ -108,33 +108,41 @@ function displaySchedule(data) {
 
 /* --- Card Builder --- */
 function makeCard(item, isOngoing) {
-    const start = new Date(item.StartDate);
-    const end = new Date(item.EndDate);
-    const now = new Date();
-    const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
-    const duration = Math.round((end - start) / 60000);
+  const start = new Date(item.StartDate);
+  const end = new Date(item.EndDate);
+  const now = new Date();
+  const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
+  const duration = Math.round((end - start) / 60000);
 
-    return `
-        <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}">
-            <div class="schedule-header">
-                <div class="schedule-title">${item.Subject || 'Intet fag'}</div>
-                <div class="schedule-time">${formatTime(item.StartDate)} - ${formatTime(item.EndDate)}</div>
-            </div>
-            <div class="schedule-details">
-                ${item.Room ? `<div><strong>Lokale:</strong> ${item.Room}</div>` : ''}
-                ${item.Teacher ? `<div><strong>Lærer:</strong> ${item.Teacher}</div>` : ''}
-                ${item.Team ? `<div><strong>Hold:</strong> ${item.Team}</div>` : ''}
-                ${item.Note ? `<div><strong>Note:</strong> ${item.Note}</div>` : ''}
-                <div class="time-status">
-                    ${isOngoing
-                        ? `⏱ ${minutesLeft} min tilbage (varighed: ${duration} min)`
-                        : `Starter kl. ${formatTime(item.StartDate)}`}
-                </div>
-            </div>
-        </div>
-    `;
+  // Farver per hold (kan udvides)
+  const colorMap = {
+    "GRAFISK TEKNIKER": "#E38B29",
+    "MEDIE GRAFIKER": "#C44536",
+    "WEB UDVIKLER": "#2E4057",
+  };
+  const teamKey = (item.Team || "").toUpperCase();
+  const accent = colorMap[teamKey] || "#293646"; // badge/farve
+
+  // Tekster med fallback
+  const subject = item.Subject || 'Intet fag';
+  const timeRange = `${formatTime(item.StartDate)} - ${formatTime(item.EndDate)}`;
+  const room = item.Room ? `Lokale: ${item.Room}` : '';
+  const team = item.Team ? `Hold: ${item.Team}` : '';
+  const statusText = isOngoing ? `⏱ ${minutesLeft} min tilbage` : `Starter kl. ${formatTime(item.StartDate)}`;
+
+  return `
+    <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}">
+      <div class="schedule-row">
+        <div class="schedule-accent" style="background:${accent}"></div>
+        <div class="schedule-title">${subject}</div>
+        <div class="schedule-time">${timeRange}</div>
+        ${room ? `<div class="schedule-room">${room}</div>` : ''}
+        ${team ? `<div class="schedule-team">${team}</div>` : ''}
+        <div class="schedule-status">${statusText}</div>
+      </div>
+    </div>
+  `;
 }
-
 /* --- Auto Refresh Every Minute --- */
 document.addEventListener('DOMContentLoaded', () => {
     fetchSchedule();
