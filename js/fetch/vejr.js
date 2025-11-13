@@ -27,8 +27,6 @@ async function displayWeather() {
 
     container.innerHTML = `
       <div class="card weather-card">
-        <h2>${city}</h2>
-        ${icon ? `<img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather icon">` : ''}
         <div class="main-temp">${temp}°C</div>
       </div>
     `;

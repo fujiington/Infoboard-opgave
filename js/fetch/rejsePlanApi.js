@@ -63,7 +63,7 @@ async function displayDepartures() {
       })
       .filter(dep => dep && dep.depDateTime > dep.localNow)
       .sort((a, b) => a.depDateTime - b.depDateTime)
-      .slice(0, 4);
+      .slice(0, 5);
 
     // --- Render ---
     if (!futureDepartures.length) {
@@ -76,7 +76,6 @@ async function displayDepartures() {
         const name = dep.name || dep.line || "Unknown";
         const time = dep.rtTime || dep.time || "";
         const direction = dep.direction || dep.finalStop || "";
-        const stop = dep.stop || dep.stopName || "";
         const type = dep.type || "";
         const delay =
           dep.rtTime && dep.rtTime !== dep.time
@@ -90,10 +89,9 @@ async function displayDepartures() {
         return `
         <div class="card departure-card">
           <h3>${name} ${type ? `(${type})` : ""}</h3>
-          ${direction ? `<div><strong>Direction:</strong> ${direction}</div>` : ""}
-          ${stop ? `<div><strong>Stop:</strong> ${stop}</div>` : ""}
-          ${time ? `<div><strong>Time:</strong> ${time} ${delay}</div>` : ""}
-          <div><strong>Leaves in:</strong> ${minutesLeft} min</div>
+          ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
+          ${time ? `<div><strong></strong> ${time} ${delay}</div>` : ""}
+
         </div>
       `;
       })
