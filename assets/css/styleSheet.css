@@ -1,4 +1,4 @@
-/* === GLOBAL STYLING === */
+/*GLOBAL STYLING*/
 * {
   box-sizing: border-box;
   margin: 0;
@@ -23,8 +23,8 @@ body {
   grid-template-rows: 0.8fr 0.3fr 1fr;  /* lidt lavere midtersektion */
 
 
-  gap: 2rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 0.5rem;
 
   background:
     linear-gradient(to bottom right, rgba(174, 21, 21, 0.404), rgba(186, 156, 24, 0.584)),
@@ -32,7 +32,7 @@ body {
   color: #111;
 }
 
-/* === GENERAL CARD STYLE === */
+/*GENERAL CARD STYLE*/
 #content,
 #menu,
 #news,
@@ -147,6 +147,16 @@ body {
   padding: 20px;
   margin: 0;
 }
+
+#menu h2{
+    text-align: center;
+    color: #293646;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 #menu .card {
   display: flex;
   justify-content: space-between;
@@ -176,6 +186,15 @@ body {
   justify-content: flex-start;
   padding: 1rem;
   height: 100%;
+}
+
+#news h2{
+    text-align: center;
+    color: #293646;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }
 
 #news .card.fade-in {
@@ -329,6 +348,15 @@ border-radius: 15px;
   padding: 1rem;
 }
 
+#departures h2{
+    text-align: center;
+    color: #293646;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 #departures .card {
   display: flex;
   justify-content: space-between;
@@ -353,7 +381,7 @@ p {
   margin-bottom: 0.6rem;
 }
 
-/* === RESPONSIVE DESIGN === */
+/*RESPONSIVE DESIGN*/
 @media (max-width: 1000px) {
   body {
     grid-template-areas:
@@ -382,7 +410,7 @@ p {
   }
 }
 
-/* === SMALL SCREEN OPTIMIZATION === */
+/*SMALL SCREEN OPTIMIZATION*/
 @media (max-width: 600px) {
   body {
     padding: 0.8rem;
@@ -390,7 +418,7 @@ p {
   }
 
   h2 {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   p {
