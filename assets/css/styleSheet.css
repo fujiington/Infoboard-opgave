@@ -67,6 +67,7 @@ body {
   padding: 1.5rem;
   color: #293646;
   font-size: 4rem;
+  font-weight: bold;
   font-weight: 500;
 }
 
@@ -96,7 +97,8 @@ body {
 }
 /* WEATHER */
 #weather {
-  font-size: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: bold;
   line-height: 1.2;
   padding: 0.3rem;
 }
@@ -117,20 +119,20 @@ body {
 
 /*Dato*/
 #getCopenhagenDate {
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 /*WC*/
 #wc {
   position: relative;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 #wc::before {
-  content: "🚻 WC";
-  animation: wcBlink 1.5s infinite;
+  content: "🡨 WC 🚻";
+  animation: wcBlink 3s infinite;
 }
 
 /* Blink animation */
