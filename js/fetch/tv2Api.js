@@ -42,11 +42,10 @@ async function displayNews() {
       const link = article.link || article.url || "";
       const pubDate = article.pubDate || article.publishedDate || "";
       const author = article.author || "";
-      const thumbnail = article.thumbnail || article.enclosure?.link || "";
 
       container.innerHTML = `
+        <h2>Nyheder</h2>
         <div class="card fade-in">
-          ${thumbnail ? `<img src="${thumbnail}" alt="${title}" style="max-width: 100%; height: auto; border-radius: 4px;">` : ''}
           <h3>${link ? `<a href="${link}" target="_blank">${title}</a>` : title}</h3>
           ${pubDate ? `<div class="date"><strong>Udgivet:</strong> ${new Date(pubDate).toLocaleString('da-DK')}</div>` : ''}
           ${author ? `<div class="author"><strong>Forfatter:</strong> ${author}</div>` : ''}
