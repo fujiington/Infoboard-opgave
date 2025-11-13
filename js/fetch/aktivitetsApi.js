@@ -135,7 +135,6 @@ function makeCard(item, isOngoing) {
       <div class="schedule-row">
         <div class="schedule-accent" style="background:${accent}"></div>
         <div class="schedule-title">${subject}</div>
-        <div class="schedule-time">${timeRange}</div>
         ${room ? `<div class="schedule-room">${room}</div>` : ''}
         ${team ? `<div class="schedule-team">${team}</div>` : ''}
         <div class="schedule-status">${statusText}</div>

@@ -17,11 +17,10 @@ body {
   /* Updated grid layout */
   grid-template-areas:
     "news getCopenhagenTime content"
-    "departures getCopenhagenSubRow content"
+    "news getCopenhagenSubRow content"
     "departures menu content";
   grid-template-columns: 1fr 0.9fr 1.3fr;
-  grid-template-rows: 0.8fr 0.3fr 1fr;  /* lidt lavere midtersektion */
-
+  grid-template-rows: 1fr 0.3fr 1fr;
 
   gap: 1rem;
   padding: 0.5rem;
