@@ -79,7 +79,7 @@ async function displayMenu() {
       return;
     }
 
-    container.innerHTML = 
+    container.innerHTML = '<h1 style="text-align: center; margin-bottom: 20px;">Ugens Menu</h1>' + 
     days.map(day => {
       const dayName = day.dayName || day.DayName || day.name || "Unknown Day";
       const dishes = day.dish || day.dishes || day.Dish || day.Dishes || [];
