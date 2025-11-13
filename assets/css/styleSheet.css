@@ -5,12 +5,13 @@
   padding: 0;
   font-family: "Inter", sans-serif;
 }
-
+html, body {
+  overflow: hidden !important; 
+}
 body {
   display: grid;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;               /* Fjern scrollbars */
 
 
   /* Updated grid layout */
@@ -201,7 +202,12 @@ body {
 }
 /* CONTENT */
 #content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
   padding: 20px;
+
 }
 #content h2{
     text-align: center;
@@ -213,9 +219,11 @@ body {
 }
 /* --- OVERORDNET CARD --- */
 #content .schedule-card {
-  width: 80%;
-  margin-bottom: 12px;
-  border-radius: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
   background: rgba(41, 54, 70, 0.06); /* svag baggrund, juster efter behov */
   padding: 6px 8px;
   box-sizing: border-box;
@@ -235,48 +243,39 @@ body {
 } */
 
 /* titel: fylder mest, forkortes ved overflow */
-.schedule-title {
+.schedule-title, 
+.schedule-time  {
   flex: 2 1 220px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
   color: #1f2b36;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1rem;
-}
-
-/* tid: fast bredde, højre-justeret */
-.schedule-time {
-  flex: 0 0 140px;
-  text-align: right;
-  color: #333;
-  font-size: 0.95rem;
 }
 
 /* badges: lokale / hold / status */
-.schedule-room,
-.schedule-team,
-.schedule-status {
-  flex: 0 0 170px;             /* samme basisbredde så de står pænt */
+.schedule-row {
+  display: flex;
+  width: 100%;
+  /* flex: 0 0 170px;             samme basisbredde så de står pænt */
   background: #ddb423;         /* gul badge-farve */
-  color: #122230;
-  padding: 6px 10px;
-  border-radius: 12px;
-  font-weight: 600;
-  text-align: left;
-  font-size: 0.88rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #fff;
+  padding: 4px 15px;
+  border-radius: 15px;
+  font-weight: 300;
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  line-height: normal;
 }
 
 /* gør status lidt højrejusteret og mulighed for fremhævelse */
-.schedule-status {
+/* .schedule-status {
   text-align: right;
-  background: #2e4057; /* mørkere for status - juster hvis ønsket */
+  background: #2e4057; 
   color: #fff;
   flex: 0 0 160px;
-}
+} */
 
 /* mindre skærme — bryd pænt til flere linjer */
 @media (max-width: 900px) {
