@@ -16,14 +16,20 @@ async function displayNews() {
 
   try {
     const data = await getNews();
+    console.log("Full API data:", JSON.stringify(data, null, 2));
 
-    // Add the title before showing articles
-    container.innerHTML = `<h2 style="font-family: Arial; color: #333;">Nyheder</h2>`;
-
-    let articles = Array.isArray(data.items) ? data.items : (data.items ? [data.items] : []);
+    let articles = [];
+    if (Array.isArray(data.items)) {
+      articles = data.items;
+    } else if (data.items) {
+      articles = [data.items];
+    } else {
+      container.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      return;
+    }
 
     if (!articles.length) {
-      container.innerHTML += "<p>No news articles found.</p>";
+      container.innerHTML = "<p>No news articles found.</p>";
       return;
     }
 
@@ -39,7 +45,6 @@ async function displayNews() {
       const thumbnail = article.thumbnail || article.enclosure?.link || "";
 
       container.innerHTML = `
-        <h2 style="font-family: Arial; color: #333;">Nyheder</h2>
         <div class="card fade-in">
           ${thumbnail ? `<img src="${thumbnail}" alt="${title}" style="max-width: 100%; height: auto; border-radius: 4px;">` : ''}
           <h3>${link ? `<a href="${link}" target="_blank">${title}</a>` : title}</h3>
@@ -51,16 +56,17 @@ async function displayNews() {
     }
 
     showArticle(index);
+
     setInterval(() => {
       index = (index + 1) % articles.length;
       showArticle(index);
-    }, 30000);
+    }, 30000); // 5 minutes in milliseconds
+
   } catch (err) {
     console.error("Full error:", err);
     container.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
   }
 }
-
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', displayNews);

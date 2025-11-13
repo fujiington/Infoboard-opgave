@@ -130,7 +130,7 @@ body {
 }
 
 #wc::before {
-  content: "🚻 WC Ledigt";
+  content: "🚻 WC";
   animation: wcBlink 1.5s infinite;
 }
 
