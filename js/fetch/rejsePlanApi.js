@@ -32,12 +32,12 @@ async function displayDepartures() {
         ? data.departures
         : [data.departures];
     } else {
-      container.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      container.innerHTML = `<h2>Bustider</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
       return;
     }
 
     if (!departures.length) {
-      container.innerHTML = "<p>No departures found.</p>";
+      container.innerHTML = "<h2>Bustider</h2><p>No departures found.</p>";
       return;
     }
 
@@ -67,11 +67,11 @@ async function displayDepartures() {
 
     // --- Render ---
     if (!futureDepartures.length) {
-      container.innerHTML = "<p>No upcoming departures.</p>";
+      container.innerHTML = "<h2>Bustider</h2><p>No upcoming departures.</p>";
       return;
     }
 
-    container.innerHTML = futureDepartures
+    container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
       .map(dep => {
         const name = dep.name || dep.line || "Unknown";
         const time = dep.rtTime || dep.time || "";
@@ -91,14 +91,13 @@ async function displayDepartures() {
           <h3>${name} ${type ? `(${type})` : ""}</h3>
           ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
           ${time ? `<div><strong></strong> ${time} ${delay}</div>` : ""}
-
         </div>
       `;
       })
       .join("");
   } catch (err) {
     console.error("Full error:", err);
-    container.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    container.innerHTML = `<h2>Bustider</h2><p style="color:red;">Error: ${err.message}</p>`;
   }
 }
 
