@@ -50,6 +50,7 @@ async function displayNews() {
           ${pubDate ? `<div class="date"><strong>Udgivet:</strong> ${new Date(pubDate).toLocaleString('da-DK')}</div>` : ''}
           ${author ? `<div class="author"><strong>Forfatter:</strong> ${author}</div>` : ''}
           ${description ? `<div class="description">${description}</div>` : ''}
+          <h5>Kilde: DR DK</h5>
         </div>
       `;
     }

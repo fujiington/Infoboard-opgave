@@ -95,9 +95,11 @@ body {
   min-width: 0;
   overflow: hidden;
 }
+
+
 /* WEATHER */
 #weather {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   line-height: 1.2;
   padding: 0.3rem;
@@ -119,19 +121,19 @@ body {
 
 /*Dato*/
 #getCopenhagenDate {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
 /*WC*/
 #wc {
   position: relative;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
 #wc::before {
-  content: "🡨 WC 🚻";
+  content: "🡨WC 🚻";
   animation: wcBlink 3s infinite;
 }
 
@@ -263,10 +265,17 @@ body {
 } */
 
 /* titel: fylder mest, forkortes ved overflow */
-.schedule-title, 
 .schedule-time  {
   flex: 2 1 220px;
   font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  color: #1f2b36;
+  overflow: hidden;
+}
+.schedule-title {
+  flex: 3 1 300px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
   color: #1f2b36;

@@ -1,9 +1,9 @@
 const API_URL = 'https://iws.itcn.dk/techcollege/schedules?departmentCode=smed';
-
+ 
 /* --- Fetch Schedule from API --- */
 async function fetchSchedule() {
     const content = document.getElementById('content');
-
+ 
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
@@ -22,7 +22,7 @@ async function fetchSchedule() {
         console.error('Fejl ved hentning af skema:', error);
     }
 }
-
+ 
 /* --- Format Helpers --- */
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -30,34 +30,34 @@ function formatDate(dateString) {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
     });
 }
-
+ 
 function formatTime(dateString) {
     const date = new Date(dateString);
     return date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
 }
-
+ 
 /* --- Display Function --- */
 function displaySchedule(data) {
     const content = document.getElementById('content');
-
+ 
     // Handle multiple structures
     let scheduleData = data;
     if (data && typeof data === 'object' && !Array.isArray(data)) {
         scheduleData = data.value || data.data || data.schedules || data.activities || Object.values(data)[0];
     }
-
+ 
     if (!Array.isArray(scheduleData) || scheduleData.length === 0) {
         content.innerHTML = '<div class="error">Ingen aktiviteter fundet</div>';
         return;
     }
-
+ 
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
     const offsetMs = now.getTimezoneOffset() * 60000;
-
+ 
     // Sort by start time
     scheduleData.sort((a, b) => new Date(a.StartDate) - new Date(b.StartDate));
-
+ 
     // Group by day
     const groupedByDay = {};
     scheduleData.forEach(item => {
@@ -65,19 +65,19 @@ function displaySchedule(data) {
         if (!groupedByDay[day]) groupedByDay[day] = [];
         groupedByDay[day].push(item);
     });
-
+ 
     const todaysClasses = groupedByDay[todayStr] || [];
-
+ 
     // Classes happening now
     const currentClasses = todaysClasses.filter(item => {
         const start = new Date(new Date(item.StartDate).getTime() - offsetMs);
         const end = new Date(new Date(item.EndDate).getTime() - offsetMs);
         return now >= start && now <= end;
     });
-
+ 
     // Next upcoming class today
     const nextToday = todaysClasses.find(item => new Date(item.StartDate) > now);
-
+ 
     // Find next day’s classes if today is done
     let nextDayClasses = [];
     if (!currentClasses.length && !nextToday) {
@@ -86,9 +86,9 @@ function displaySchedule(data) {
             nextDayClasses = groupedByDay[futureDays[0]];
         }
     }
-
+ 
     let html = '';
-
+ 
     if (currentClasses.length > 0) {
         html += `<h2 class="section-title">📘 Aktuelle Lektioner</h2>`;
         html += currentClasses.map(item => makeCard(item, true)).join('');
@@ -102,10 +102,10 @@ function displaySchedule(data) {
     } else {
         html = `<h2 class="section-title">🎓 Ingen kommende lektioner fundet</h2>`;
     }
-
+ 
     content.innerHTML = html;
 }
-
+ 
 /* --- Card Builder --- */
 function makeCard(item, isOngoing) {
   const start = new Date(item.StartDate);
@@ -113,7 +113,7 @@ function makeCard(item, isOngoing) {
   const now = new Date();
   const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
   const duration = Math.round((end - start) / 60000);
-
+ 
   // Farver per hold (kan udvides)
   const colorMap = {
     "GRAFISK TEKNIKER": "#E38B29",
@@ -122,14 +122,14 @@ function makeCard(item, isOngoing) {
   };
   const teamKey = (item.Team || "").toUpperCase();
   const accent = colorMap[teamKey] || "#293646"; // badge/farve
-
+ 
   // Tekster med fallback
   const subject = item.Subject || 'Intet fag';
   const timeRange = `${formatTime(item.StartDate)} - ${formatTime(item.EndDate)}`;
   const room = item.Room ? `Lokale: ${item.Room}` : '';
   const team = item.Team ? `Hold: ${item.Team}` : '';
   const statusText = isOngoing ? `⏱ ${minutesLeft} min tilbage` : `Starter kl. ${formatTime(item.StartDate)}`;
-
+ 
   return `
     <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}">
       <div class="schedule-row">
@@ -147,3 +147,4 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchSchedule();
     setInterval(fetchSchedule, 60 * 1000);
 });
+ 

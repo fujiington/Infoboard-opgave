@@ -51,7 +51,6 @@ async function getCanteenMenu() {
 async function displayMenu() {
   const container = document.getElementById("menu");
 
-  
   if (!container) {
     console.error("Element with id 'menu' not found!");
     return;
@@ -59,10 +58,10 @@ async function displayMenu() {
 
   try {
     const data = await getCanteenMenu();
-    console.log("Full API data:", JSON.stringify(data, null, 2)); // Better logging
+    console.log("Full API data:", JSON.stringify(data, null, 2));
 
     let days = [];
-    
+
     if (Array.isArray(data)) {
       days = data;
     } else if (data.menuDay) {
@@ -79,29 +78,36 @@ async function displayMenu() {
       return;
     }
 
+    // --- 🗓 Detect today's day ---
+    const weekdayNames = [
+      "Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"
+    ];
+    const todayName = weekdayNames[new Date().getDay()].toLowerCase();
+
     container.innerHTML = '<h2>Ugens Menu</h2>' + 
-    days.map(day => {
-      const dayName = day.dayName || day.DayName || day.name || "Unknown Day";
-      const dishes = day.dish || day.dishes || day.Dish || day.Dishes || [];
-      const dishesArray = Array.isArray(dishes) ? dishes : [dishes];
-      
-      
-      return `
-      
-      
-        <div class="card" id="menu-card">
-          <div class="day">${dayName}</div>
-          <div class="dishes">${dishesArray.filter(d => d).join("<br>") || "No dishes"}</div>
-        </div>
-      `;
-    }).join("");
+      days.map(day => {
+        const dayName = day.dayName || day.DayName || day.name || "Unknown Day";
+        const dishes = day.dish || day.dishes || day.Dish || day.Dishes || [];
+        const dishesArray = Array.isArray(dishes) ? dishes : [dishes];
+
+        // --- highlight today's card ---
+        const isToday = dayName.toLowerCase().includes(todayName);
+        const cardClass = isToday ? "card today" : "card";
+
+        return `
+          <div class="${cardClass}" id="menu-card">
+            <div class="day"><h4>${dayName}</h4></div>
+            <div class="dishes">${dishesArray.filter(d => d).join("<br>") || "No dishes"}</div>
+          </div>
+        `;
+      }).join("");
   } catch (err) {
     console.error("Full error:", err);
     container.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
   }
 }
 
-// kør når DOM er loadet
+// Run when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', displayMenu);
 } else {

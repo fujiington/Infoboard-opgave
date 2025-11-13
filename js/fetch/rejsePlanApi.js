@@ -71,30 +71,34 @@ async function displayDepartures() {
       return;
     }
 
-    container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
-      .map(dep => {
-        const name = dep.name || dep.line || "Unknown";
-        const time = dep.rtTime || dep.time || "";
-        const direction = dep.direction || dep.finalStop || "";
-        const type = dep.type || "";
-        const delay =
-          dep.rtTime && dep.rtTime !== dep.time
-            ? `<span style="color:red;">(Delayed)</span>`
-            : "";
+container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
+  .map((dep, index) => {  // Add index parameter
+    const name = dep.name || dep.line || "Unknown";
+    const time = dep.rtTime || dep.time || "";
+    const direction = dep.direction || dep.finalStop || "";
+    const type = dep.type || "";
+    const delay =
+      dep.rtTime && dep.rtTime !== dep.time
+        ? `<span style="color:red;">(Forsinket)</span>`
+        : "";
 
-        const minutesLeft = Math.round(
-          (dep.depDateTime - dep.localNow) / 60000
-        );
+    const minutesLeft = Math.round(
+      (dep.depDateTime - dep.localNow) / 60000
+    );
 
-        return `
-        <div class="card departure-card">
-          <h3>${name} ${type ? `(${type})` : ""}</h3>
-          ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
-          ${time ? `<div><strong></strong> ${time} ${delay}</div>` : ""}
-        </div>
-      `;
-      })
-      .join("");
+    // Add pink background to first departure
+    const highlightStyle = index === 0 ? 'background-color: #f3bcd7ff;' : '';
+
+    return `
+      <div class="card departure-card" style="${highlightStyle}">
+        <h4>${name} ${type ? `(${type})` : ""}</h4>
+        ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
+        ${time ? `<div><strong></strong> ${time} ${delay}</div>` : ""}
+      </div>
+    `;
+  })
+  .join("");
+
   } catch (err) {
     console.error("Full error:", err);
     container.innerHTML = `<h2>Bustider</h2><p style="color:red;">Error: ${err.message}</p>`;
