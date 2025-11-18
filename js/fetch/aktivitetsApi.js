@@ -60,7 +60,7 @@ function displayNextLectures(data) {
     }
 
     // Take next 10 lectures
-    const next10 = futureLectures.slice(0, 10);
+    const next10 = futureLectures.slice(0, 9);
 
     let html = `<h1 class="section-title">LOKALER</h1>`;
     html += next10.map(item => makeCard(item, now)).join('');
