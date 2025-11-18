@@ -1,22 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
   const timeContainer = document.getElementById("getCopenhagenTime");
+  const dateContainer = document.getElementById("getCopenhagenDate");
 
-  function updateCopenhagenTime() {
+  function updateCopenhagenTimeAndDate() {
     const now = new Date();
-    const options = {
+
+    // Time
+    const timeOptions = {
       timeZone: "Europe/Copenhagen",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
       hour12: false
     };
-    // Brug tabular-nums via CSS for at undgå hop
-    timeContainer.textContent = now.toLocaleTimeString("da-DK", options);
+    timeContainer.textContent = now.toLocaleTimeString("da-DK", timeOptions);
+
+    // Date
+    const dateOptions = {
+      timeZone: "Europe/Copenhagen",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    };
+    dateContainer.textContent = now.toLocaleDateString("da-DK", dateOptions);
   }
 
-  // Initial opdatering
-  updateCopenhagenTime();
+  // Initial update
+  updateCopenhagenTimeAndDate();
 
-  // Opdater hvert sekund
-  setInterval(updateCopenhagenTime, 1000);
+  // Update every second
+  setInterval(updateCopenhagenTimeAndDate, 1000);
 });
