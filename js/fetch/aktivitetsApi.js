@@ -13,7 +13,7 @@ async function fetchSchedule() {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
         const data = await response.json();
-        displayUpcomingSchedule(data);
+        displayNextLessons(data);
     } catch (error) {
         content.innerHTML = `
             <div class="error">
@@ -26,8 +26,8 @@ async function fetchSchedule() {
     }
 }
 
-/* --- Display Upcoming Schedule --- */
-function displayUpcomingSchedule(data) {
+/* --- Display Next 20 Lessons --- */
+function displayNextLessons(data) {
     const content = document.getElementById('content');
 
     let scheduleData = data.value || data.data || data.schedules || data.activities || data;
@@ -39,39 +39,42 @@ function displayUpcomingSchedule(data) {
     }
 
     const now = new Date();
-    scheduleData.sort((a,b) => new Date(a.StartDate) - new Date(b.StartDate));
 
-    const todayStr = now.toISOString().split('T')[0];
-    const todays = scheduleData.filter(x => x.StartDate.startsWith(todayStr));
+    // Sort all lessons by start time
+    scheduleData.sort((a, b) => new Date(a.StartDate) - new Date(b.StartDate));
 
-    if (todays.length === 0) {
-        content.innerHTML = '<h2 class="section-title">🎓 Ingen lektioner i dag</h2>';
-        return;
-    }
+    // Filter lessons that haven't ended yet
+    const upcomingLessons = scheduleData.filter(item => new Date(item.EndDate) > now);
 
-    // Filter ONLY upcoming classes
-    const upcoming = todays.filter(item => new Date(item.StartDate) > now);
-
-    if (upcoming.length === 0) {
+    if (upcomingLessons.length === 0) {
         content.innerHTML = '<h2 class="section-title">🎓 Ingen flere lektioner i dag</h2>';
         return;
     }
 
-    let html = `<h2 class="section-title">Næste Lektioner</h2>`;
-    html += upcoming.map(item => makeCard(item)).join('');
+    // Take only the next 20 lessons
+    const next20 = upcomingLessons.slice(0, 20);
 
+    let html = `<h2 class="section-title">Næste 20 Lektioner</h2>`;
+    html += next20.map(item => makeCard(item, now)).join('');
     content.innerHTML = html;
 }
 
 /* --- Card Builder --- */
-function makeCard(item) {
+function makeCard(item, now) {
     const start = new Date(item.StartDate);
     const end = new Date(item.EndDate);
     const subject = item.Subject || "Ukendt fag";
     const room = item.Room ? `Lokale: ${item.Room}` : "";
     const team = item.Team ? `Hold: ${item.Team}` : "";
 
-    const statusText = `Starter kl. ${formatTime(item.StartDate)}`;
+    // Determine status
+    let statusText;
+    if (now >= start && now <= end) {
+        const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
+        statusText = `⏱ ${minutesLeft} min tilbage`;
+    } else {
+        statusText = `Starter kl. ${formatTime(item.StartDate)}`;
+    }
 
     return `
         <div class="schedule-card">

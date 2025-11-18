@@ -75,7 +75,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
   .map((dep, index) => {  // Add index parameter
     const name = dep.name || dep.line || "Unknown";
     const time = dep.rtTime || dep.time || "";
-    const direction = dep.direction || dep.finalStop || "";
+    const direction = dep.direction || "";
     const type = dep.type || "";
     const delay =
       dep.rtTime && dep.rtTime !== dep.time
@@ -91,7 +91,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
 
     return `
       <div class="card departure-card" style="${highlightStyle}">
-        <h4>${name} ${type ? `(${type})` : ""}</h4>
+        <h4>${name} ${type ? `` : ""}</h4>
         ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
         ${time ? `<div><strong></strong>${delay} ${time} </div>` : ""}
       </div>

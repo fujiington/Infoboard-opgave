@@ -27,10 +27,10 @@ body{
     "news getCopenhagenSubRow content"
     "departures menu content";
   grid-template-columns: 1fr 0.9fr 1.3fr;
-  grid-template-rows: 0.5fr 0.3fr 0.4fr;
+  grid-template-rows: 2fr 0.3fr 0.4fr;
   gap: 3rem;
   padding: 2rem;
-  background: linear-gradient(to bottom right, rgba(174,21,21,0.404), rgba(186,156,24,0.584)), url("../images/42-76299788.jpg.png") center/cover no-repeat;
+  background: linear-gradient(to bottom right, rgba(174,21,21,0.404), rgba(186,156,24,0.584)), url("../images/rlwMC5f.gif") center/cover no-repeat;
   color: #111;
 }
 
@@ -176,15 +176,19 @@ body{
 }
 #menu h2{ text-align: center; font-size: 48px; font-weight: 400; }
 #menu .card{ 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  padding: 15px; 
-  border-radius: 15px; 
-  background: rgba(41,54,70,0.20); 
-  min-height: 16px; 
-  gap: 20px; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 15px;
+  background: rgba(41,54,70,0.20);
   width: 100%;
+  margin-bottom: 1rem;
+
+  /* 👇 FORCES ALL CARDS TO SAME SIZE */
+  min-height: 90px;           /* adjust if needed */
+  height: 90px;               /* fixed uniform height */
+  overflow: hidden;    
 }
 #menu .card.today {
   background: #da842884;
@@ -195,7 +199,6 @@ body{
 
 /* NEWS PANEL */
 #news{
-  grid-area: news;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
