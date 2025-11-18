@@ -6,14 +6,22 @@ function formatTime(dateString) {
     return date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
 }
 
-/* --- Fetch Schedule from API --- */
+/* --- Format date --- */
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'numeric' });
+}
+
+/* --- Fetch Schedule --- */
 async function fetchSchedule() {
     const content = document.getElementById('content');
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
+
         const data = await response.json();
-        displayNextLessons(data);
+        displayNextLectures(data);
+
     } catch (error) {
         content.innerHTML = `
             <div class="error">
@@ -26,8 +34,8 @@ async function fetchSchedule() {
     }
 }
 
-/* --- Display Next 20 Lessons --- */
-function displayNextLessons(data) {
+/* --- Show Next 10 Lectures --- */
+function displayNextLectures(data) {
     const content = document.getElementById('content');
 
     let scheduleData = data.value || data.data || data.schedules || data.activities || data;
@@ -40,26 +48,27 @@ function displayNextLessons(data) {
 
     const now = new Date();
 
-    // Sort all lessons by start time
+    // Sort by start date
     scheduleData.sort((a, b) => new Date(a.StartDate) - new Date(b.StartDate));
 
-    // Filter lessons that haven't ended yet
-    const upcomingLessons = scheduleData.filter(item => new Date(item.EndDate) > now);
+    // Only FUTURE lectures
+    const futureLectures = scheduleData.filter(item => new Date(item.StartDate) > now);
 
-    if (upcomingLessons.length === 0) {
-        content.innerHTML = '<h2 class="section-title">🎓 Ingen flere lektioner i dag</h2>';
+    if (futureLectures.length === 0) {
+        content.innerHTML = '<h1 class="section-title">🎓 Ingen kommende lektioner</h1>';
         return;
     }
 
-    // Take only the next 20 lessons
-    const next20 = upcomingLessons.slice(0, 20);
+    // Take next 10 lectures
+    const next10 = futureLectures.slice(0, 10);
 
-    let html = `<h2 class="section-title">Næste 20 Lektioner</h2>`;
-    html += next20.map(item => makeCard(item, now)).join('');
+    let html = `<h1 class="section-title">LOKALER</h1>`;
+    html += next10.map(item => makeCard(item, now)).join('');
+
     content.innerHTML = html;
 }
 
-/* --- Card Builder --- */
+/* --- Build Lesson Card --- */
 function makeCard(item, now) {
     const start = new Date(item.StartDate);
     const end = new Date(item.EndDate);
@@ -67,14 +76,8 @@ function makeCard(item, now) {
     const room = item.Room ? `Lokale: ${item.Room}` : "";
     const team = item.Team ? `Hold: ${item.Team}` : "";
 
-    // Determine status
-    let statusText;
-    if (now >= start && now <= end) {
-        const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
-        statusText = `⏱ ${minutesLeft} min tilbage`;
-    } else {
-        statusText = `Starter kl. ${formatTime(item.StartDate)}`;
-    }
+    // Status text
+    const statusText = `Starter ${formatDate(item.StartDate)} kl. ${formatTime(item.StartDate)}`;
 
     return `
         <div class="schedule-card">
@@ -91,5 +94,5 @@ function makeCard(item, now) {
 /* --- Auto Refresh every minute --- */
 document.addEventListener('DOMContentLoaded', () => {
     fetchSchedule();
-    setInterval(fetchSchedule, 60 * 1000); // refresh every 60 seconds
+    setInterval(fetchSchedule, 60 * 1000);
 });

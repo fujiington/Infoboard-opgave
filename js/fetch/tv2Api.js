@@ -58,7 +58,7 @@ async function displayNews() {
       const article2 = articles[(i + 1) % articles.length]; // second article in pair
  
       container.innerHTML = `
-        <h2>Nyheder</h2>
+        <h2>NYHEDER</h2>
         <div class="news-pair">
           ${renderArticle(article1)}
           ${renderArticle(article2)}

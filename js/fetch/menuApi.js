@@ -85,7 +85,7 @@ async function displayMenu() {
     ];
     const todayName = weekdayNames[new Date().getDay()].toLowerCase();
  
-    container.innerHTML = '<h2>Dagens Ret </h2><h3> 35.-<h3>' +
+    container.innerHTML = '<h2>DAGENS RET </h2><h3> 35.-<h3>' +
       days.map(day => {
         const dayName = day.dayName || day.DayName || day.name || "Unknown Day";
         const dishes = day.dish || day.dishes || day.Dish || day.Dishes || [];

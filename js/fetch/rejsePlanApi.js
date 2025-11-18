@@ -63,7 +63,7 @@ async function displayDepartures() {
       })
       .filter(dep => dep && dep.depDateTime > dep.localNow)
       .sort((a, b) => a.depDateTime - b.depDateTime)
-      .slice(0, 8);
+      .slice(0, 6);
 
     // --- Render ---
     if (!futureDepartures.length) {
@@ -71,7 +71,7 @@ async function displayDepartures() {
       return;
     }
 
-container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
+container.innerHTML = `<h2>BUSTIDER</h2>` + futureDepartures
   .map((dep, index) => {  // Add index parameter
     const name = dep.name || dep.line || "Unknown";
     const time = dep.rtTime || dep.time || "";
@@ -91,9 +91,9 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
 
     return `
       <div class="card departure-card" style="${highlightStyle}">
-        <h4>${name} ${type ? `` : ""}</h4>
-        ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
-        ${time ? `<div><strong></strong>${delay} ${time} </div>` : ""}
+        <h3>${name} ${type ? `` : ""}</h3>
+        ${direction ? `<div><h3><strong></strong> ${direction}</h3></div>` : ""}
+        ${time ? `<div><h3><strong></strong>${delay} ${time} </h3></div>` : ""}
       </div>
     `;
   })
@@ -111,4 +111,4 @@ if (document.readyState === "loading") {
   displayDepartures();
 }
 
-setInterval(displayDepartures, 30 * 1000); // update every 30 seconds
+setInterval(displayDepartures, 10 * 1000); // update every 30 seconds
