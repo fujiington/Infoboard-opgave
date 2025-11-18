@@ -24,13 +24,6 @@ async function fetchSchedule() {
 }
 
 /* --- Format Helpers --- */
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('da-DK', {
-        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    });
-}
-
 function formatTime(dateString) {
     const date = new Date(dateString);
     return date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
@@ -52,7 +45,6 @@ function displaySchedule(data) {
 
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
-    const offsetMs = now.getTimezoneOffset() * 60000;
 
     // Sort by start time
     scheduleData.sort((a, b) => new Date(a.StartDate) - new Date(b.StartDate));
@@ -67,23 +59,18 @@ function displaySchedule(data) {
 
     const todaysClasses = groupedByDay[todayStr] || [];
 
-    // Classes happening now
     const currentClasses = todaysClasses.filter(item => {
-        const start = new Date(new Date(item.StartDate).getTime() - offsetMs);
-        const end = new Date(new Date(item.EndDate).getTime() - offsetMs);
+        const start = new Date(item.StartDate);
+        const end = new Date(item.EndDate);
         return now >= start && now <= end;
     });
 
-    // Next upcoming class today
     const nextToday = todaysClasses.find(item => new Date(item.StartDate) > now);
 
-    // Find next day’s classes if today is done
     let nextDayClasses = [];
     if (!currentClasses.length && !nextToday) {
         const futureDays = Object.keys(groupedByDay).filter(day => day > todayStr).sort();
-        if (futureDays.length > 0) {
-            nextDayClasses = groupedByDay[futureDays[0]];
-        }
+        if (futureDays.length > 0) nextDayClasses = groupedByDay[futureDays[0]];
     }
 
     let html = '';
@@ -112,25 +99,24 @@ function makeCard(item, isOngoing) {
     const now = new Date();
     const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
 
-    // Farver per hold (kan udvides)
+    // Farver per hold
     const colorMap = [
         { pattern: /GRAFISK TEKNIKER/i, color: "#E38B29" },
         { pattern: /MEDIE GRAFIKER/i, color: "#C44536" },
         { pattern: /WEB UDVIKLER/i, color: "#2E4057" },
     ];
-    const accentObj = colorMap.find(entry => entry.pattern.test(item.Team || ""));
+    const accentObj = colorMap.find(entry => entry.pattern.test((item.Team || "").trim()));
     const accent = accentObj ? accentObj.color : "#293646";
 
-    // Tekster med fallback
     const subject = item.Subject || 'Intet fag';
     const room = item.Room ? `Lokale: ${item.Room}` : '';
     const team = item.Team ? `Hold: ${item.Team}` : '';
     const statusText = isOngoing ? `⏱ ${minutesLeft} min tilbage` : `Starter kl. ${formatTime(item.StartDate)}`;
 
-    // HER: farven bruges som baggrund på hele kortet
     return `
-        <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}" style="background:${accent};">
+        <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}">
             <div class="schedule-row">
+                <div class="schedule-accent" style="background:${accent};"></div>
                 <div class="schedule-title">${subject}</div>
                 ${room ? `<div class="schedule-room">${room}</div>` : ''}
                 ${team ? `<div class="schedule-team">${team}</div>` : ''}
