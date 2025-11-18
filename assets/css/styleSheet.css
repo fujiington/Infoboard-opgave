@@ -223,6 +223,25 @@ body{
   gap: 20px; 
   width: 100%;
 }
+#menu .card.today {
+  background: rgba(255, 217, 90, 0.55);        /* warm highlight */
+  border: 2px solid rgba(255, 255, 255, 0.8);  /* subtle bright edge */
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.7),
+    0 0 20px rgba(255, 217, 90, 0.6);
+  transform: scale(1.03);
+  transition: all 0.25s ease-in-out;
+}
+ 
+#menu .card.today h4 {
+  font-weight: 700;
+  color: #000;
+}
+ 
+#menu .card.today .dishes {
+  font-weight: 500;
+  color: #000;
+}
 /* NEWS */
 #news{
   display: flex;
@@ -311,12 +330,14 @@ body{
 }
 /* DEPARURES */
 #departures{ 
+  display: flex;                 /* <-- gør den til flex-container   */
+  flex-direction: column;        /* <-- læg alle .card i en kolonne  */
   justify-content: flex-start;
-  align-items: stretch;
+  align-items: stretch;          /* <-- gør kortene lige brede       */
   gap: 10px; 
   border-radius: 40px; 
   background: rgba(255,255,255,0.79); 
-  border:3px solid rgba(255, 255, 255, 0.789); 
+  border: 3px solid rgba(255,255,255,0.789); 
   box-shadow: inset 0 0 8px rgba(255,255,255,0.4), 0 0 10px rgba(0,0,0,0.1); 
   backdrop-filter: blur(8px); 
   padding: 1rem; 
@@ -329,13 +350,12 @@ body{
 }
 #departures .card{ 
   display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
+  justify-content: space-between;
+  align-items: center;
   background: rgba(41,54,70,0.20); 
   border-radius: 20px; 
   padding: 10px 15px; 
 }
-
 /* MEDIA QUERIES */
 @media (max-width:1000px){
   body{

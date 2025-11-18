@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- Time & Date API ---
   function getCopenhagenTime() {
-    return new Date().toLocaleString('en-US', {
+    return new Date().toLocaleString('da-DK', {
       timeZone: 'Europe/Copenhagen',
       hour: '2-digit',
       minute: '2-digit',
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getCopenhagenDate() {
-    return new Date().toLocaleDateString('en-US', {
+    return new Date().toLocaleDateString('da-DK', {
       timeZone: 'Europe/Copenhagen',
       day: '2-digit',
       year: 'numeric',

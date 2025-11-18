@@ -79,7 +79,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
     const type = dep.type || "";
     const delay =
       dep.rtTime && dep.rtTime !== dep.time
-        ? `<span style="color:red;">(Forsinket)</span>`
+        ? `<span style="color:red; font-weight: 700;">(F)</span>`
         : "";
 
     const minutesLeft = Math.round(
@@ -87,7 +87,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
     );
 
     // Add pink background to first departure
-    const highlightStyle = index === 0 ? 'background-color: #f3bcd7ff;' : '';
+    const highlightStyle = index === 0 ? 'background-color: #da842884; color: #293646' : '';
 
     return `
       <div class="card departure-card" style="${highlightStyle}">
