@@ -87,7 +87,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
     );
 
     // Add pink background to first departure
-    const highlightStyle = index === 0 ? 'background-color: #da842884; color: #293646' : '';
+    const highlightStyle = index === 0 ? 'background-color: #d38e4584; color: #293646' : '';
 
     return `
       <div class="card departure-card" style="${highlightStyle}">

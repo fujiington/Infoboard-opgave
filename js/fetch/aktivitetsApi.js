@@ -23,13 +23,13 @@ async function fetchSchedule() {
     }
 }
 
-/* --- Format Helpers --- */
+/* --- Format time --- */
 function formatTime(dateString) {
     const date = new Date(dateString);
     return date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
 }
 
-/* --- Display Function --- */
+/* --- Display Function (kun én næste lektion) --- */
 function displaySchedule(data) {
     const content = document.getElementById('content');
 
@@ -46,10 +46,10 @@ function displaySchedule(data) {
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0];
 
-    // Sort by start time
+    // Sorter
     scheduleData.sort((a, b) => new Date(a.StartDate) - new Date(b.StartDate));
 
-    // Group by day
+    // Gruppér på dag
     const groupedByDay = {};
     scheduleData.forEach(item => {
         const day = new Date(item.StartDate).toISOString().split('T')[0];
@@ -65,28 +65,34 @@ function displaySchedule(data) {
         return now >= start && now <= end;
     });
 
-    const nextToday = todaysClasses.find(item => new Date(item.StartDate) > now);
-
-    let nextDayClasses = [];
-    if (!currentClasses.length && !nextToday) {
-        const futureDays = Object.keys(groupedByDay).filter(day => day > todayStr).sort();
-        if (futureDays.length > 0) nextDayClasses = groupedByDay[futureDays[0]];
-    }
+    const upcomingToday = todaysClasses.filter(item => new Date(item.StartDate) > now);
 
     let html = '';
 
+    /* --- 1) Igangværende lektion --- */
     if (currentClasses.length > 0) {
-        html += `<h2 class="section-title">📘 Aktuelle Lektioner</h2>`;
-        html += currentClasses.map(item => makeCard(item, true)).join('');
-    } else if (todaysClasses.some(item => new Date(item.StartDate) > now)) {
-        const remainingToday = todaysClasses.filter(item => new Date(item.StartDate) > now);
-        html += `<h2 class="section-title">Lokaler</h2>`;
-        html += remainingToday.map(item => makeCard(item, false)).join('');
-    } else if (nextDayClasses.length > 0) {
-        html += `<h2 class="section-title">I Morgen</h2>`;
-        html += nextDayClasses.slice(0, 3).map(item => makeCard(item, false)).join('');
-    } else {
-        html = `<h2 class="section-title">🎓 Ingen kommende lektioner fundet</h2>`;
+        html += `<h2 class="section-title">📘 Aktuel Lektion</h2>`;
+        html += makeCard(currentClasses[0], true);   // kun én
+    }
+
+    /* --- 2) Næste lektion senere i dag --- */
+    else if (upcomingToday.length > 0) {
+        const nextLesson = upcomingToday[0];  // kun én
+        html += `<h2 class="section-title">Næste Lektion</h2>`;
+        html += makeCard(nextLesson, false);
+    }
+
+    /* --- 3) Hvis ingen tilbage i dag → vis i morgen --- */
+    else {
+        const futureDays = Object.keys(groupedByDay).filter(day => day > todayStr).sort();
+        if (futureDays.length > 0) {
+            const nextDay = futureDays[0];
+            const firstNextDayLesson = groupedByDay[nextDay][0];
+            html += `<h2 class="section-title">I Morgen</h2>`;
+            html += makeCard(firstNextDayLesson, false);
+        } else {
+            html = `<h2 class="section-title">🎓 Ingen kommende lektioner</h2>`;
+        }
     }
 
     content.innerHTML = html;
@@ -99,11 +105,10 @@ function makeCard(item, isOngoing) {
     const now = new Date();
     const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
 
-    // Farver per hold
     const colorMap = [
         { pattern: /GRAFISK TEKNIKER/i, color: "#E38B29" },
         { pattern: /MEDIE GRAFIKER/i, color: "#C44536" },
-        { pattern: /WEB UDVIKLER/i, color: "#2E4057" },
+        { pattern: /WEB UDVIKLER/i, color: "#2E4057" }
     ];
     const accentObj = colorMap.find(entry => entry.pattern.test((item.Team || "").trim()));
     const accent = accentObj ? accentObj.color : "#293646";
@@ -111,7 +116,9 @@ function makeCard(item, isOngoing) {
     const subject = item.Subject || 'Intet fag';
     const room = item.Room ? `Lokale: ${item.Room}` : '';
     const team = item.Team ? `Hold: ${item.Team}` : '';
-    const statusText = isOngoing ? `⏱ ${minutesLeft} min tilbage` : `Starter kl. ${formatTime(item.StartDate)}`;
+    const statusText = isOngoing
+        ? `⏱ ${minutesLeft} min tilbage`
+        : `Starter kl. ${formatTime(item.StartDate)}`;
 
     return `
         <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}">
@@ -126,8 +133,8 @@ function makeCard(item, isOngoing) {
     `;
 }
 
-/* --- Auto Refresh Every Minute --- */
+/* --- Auto Refresh --- */
 document.addEventListener('DOMContentLoaded', () => {
     fetchSchedule();
-    setInterval(fetchSchedule, 60 * 1000);
+    setInterval(fetchSchedule, 60000);
 });

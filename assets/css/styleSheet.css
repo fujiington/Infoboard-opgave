@@ -264,10 +264,6 @@ body{
   max-height: 50vh; 
   overflow: visible;
 }
-/* #news .card.fade-in img{ 
-  max-height:120px; width:100%; 
-  object-fit:cover; 
-  border-radius:15px; } */
 #news .card.fade-in a{ 
   text-decoration: none; 
   color: black; 
@@ -280,10 +276,14 @@ body{
 }
 /* CONTENT */
 #content{
+  display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  overflow: visible;
+  overflow-y: auto;     /* <<< vigtig */
+  overflow-x: hidden;
   padding: 20px;
+  max-height: 100%;     /* <<< vigtig for stor skærm */
 }
 #content h2{ 
   text-align: center;
