@@ -61,7 +61,6 @@ async function displayNews() {
         <h2>NYHEDER</h2>
         <div class="news-pair">
           ${renderArticle(article1)}
-          ${renderArticle(article2)}
         </div>
       `;
     }

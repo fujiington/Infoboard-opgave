@@ -217,7 +217,7 @@ body{
   text-align: center; 
   font-size: 48px; 
   font-weight: 400; 
-  margin: 2rem;}
+  margin: 1rem;}
 #news .card.fade-in{
   display: flex; 
   flex-direction: column; 
