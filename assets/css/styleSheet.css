@@ -275,15 +275,14 @@ body{
   gap: 10px;
 }
 /* CONTENT */
-#content{
+#content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  overflow-y: auto;     /* <<< vigtig */
-  overflow-x: hidden;
+  overflow: hidden; /* <<< fjerner scrollbars helt */
   padding: 20px;
-  max-height: 100%;     /* <<< vigtig for stor skærm */
+  max-height: 100%;
 }
 #content h2{ 
   text-align: center;
