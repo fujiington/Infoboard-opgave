@@ -79,7 +79,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
     const type = dep.type || "";
     const delay =
       dep.rtTime && dep.rtTime !== dep.time
-        ? `<span style="color:red; font-weight: 700;">F</span>`
+        ? `<span style="color:#b1282c;; font-weight: 700;">F</span>`
         : "";
 
     const minutesLeft = Math.round(

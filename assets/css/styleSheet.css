@@ -1,7 +1,7 @@
 :root{
   --panel-bg: rgba(255,255,255,0.75);
   --panel-border: #5655550d;
-  --panel-radius: 61px;
+  --panel-radius: 40px;
   --outline-radius: 46px;
   --outline-offset: -12px;
 }
@@ -98,13 +98,13 @@ body{
   align-items: center;
   justify-content: center;
   background: var(--panel-bg);
-  border-radius: 81px;
-  padding: 0.2rem 1rem; /* more horizontal padding for width, smaller vertical padding for height */
+  border-radius: 41px;
+  padding: 0.4rem 1rem; /* more horizontal padding for width, smaller vertical padding for height */
   border: 2px solid var(--panel-border);
   position: relative;
   z-index: 1;
   flex: 1.2; /* slightly wider relative to spacing */
-  height: 60px; /* fixed shorter height */
+  height: 40px; /* fixed shorter height */
   overflow: visible;
 }
 
@@ -165,7 +165,9 @@ body{
   box-shadow: inset 0 0 8px rgba(255,255,255,0.3);
   padding: 1.5rem;
   text-align: center;
-  border-radius: 41px;
+  height: 40vh;
+  padding: 0;
+  margin: 0;
 }
 
 /* MENU PANEL */
@@ -200,6 +202,7 @@ body{
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
+  height: 50vh;
 }
 #news h2{ text-align: center; font-size: 48px; font-weight: 400; margin-top:0; margin-bottom:1rem;}
 #news .card.fade-in{
@@ -209,6 +212,7 @@ body{
   background: rgba(231,156,29, 0.44);
   padding: 1rem; 
   gap: 0.5rem; 
+  margin-bottom: 0.5rem;
 }
 #news .card.fade-in a{ text-decoration: none; color: black; }
 #news .news-pair{
@@ -244,9 +248,9 @@ body{
 }
 
 /* Cycle colors for schedule cards */
-#content .schedule-card:nth-child(3n+1) { background-color: #b7822c; }
-#content .schedule-card:nth-child(3n+2) { background-color: #b1282c; }
-#content .schedule-card:nth-child(3n+3) { background-color: #202933; }
+#content .schedule-card:nth-child(3n+1) { background-color: #C48827; }
+#content .schedule-card:nth-child(3n+2) { background-color: #CB282D; }
+#content .schedule-card:nth-child(3n+3) { background-color: #293646; }
 
 .schedule-row{ 
   display: flex; 
