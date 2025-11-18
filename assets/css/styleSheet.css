@@ -277,7 +277,12 @@ body{
   text-decoration: none; 
   color: black; 
 }
-
+#news .news-pair{
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-between; 
+  gap: 10px;
+}
 /* CONTENT */
 #content{
   justify-content: flex-start;
