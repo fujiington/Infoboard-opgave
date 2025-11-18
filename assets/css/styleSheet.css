@@ -224,13 +224,8 @@ body{
   width: 100%;
 }
 #menu .card.today {
-  background: rgba(255, 217, 90, 0.55);        /* warm highlight */
+  background: #da842884;        /* warm highlight */
   border: 2px solid rgba(255, 255, 255, 0.8);  /* subtle bright edge */
-  box-shadow:
-    0 0 10px rgba(255, 255, 255, 0.7),
-    0 0 20px rgba(255, 217, 90, 0.6);
-  transform: scale(1.03);
-  transition: all 0.25s ease-in-out;
 }
  
 #menu .card.today h4 {
