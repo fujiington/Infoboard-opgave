@@ -1,9 +1,14 @@
 const API_URL = 'https://iws.itcn.dk/techcollege/schedules?departmentCode=smed';
 
+/* --- Format time --- */
+function formatTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+}
+
 /* --- Fetch Schedule from API --- */
 async function fetchSchedule() {
     const content = document.getElementById('content');
-
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
@@ -14,29 +19,19 @@ async function fetchSchedule() {
             <div class="error">
                 <h2>⚠️ Kunne ikke hente skema</h2>
                 <p>${error.message}</p>
-                <p style="margin-top: 10px; font-size: 0.9em;">
-                    OBS! Kræver VPN adgang udenfor skolens netværk.
-                </p>
+                <p style="margin-top: 10px; font-size: 0.9em;">OBS! Kræver VPN adgang udenfor skolens netværk.</p>
             </div>
         `;
         console.error('Fejl ved hentning af skema:', error);
     }
 }
 
-/* --- Format Helpers --- */
-function formatTime(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
-}
-
-/* --- Display Schedule (ALWAYS SHOW ALL UPCOMING BLOCKS) --- */
+/* --- Display Schedule --- */
 function displaySchedule(data) {
     const content = document.getElementById('content');
 
-    let scheduleData = data;
-    if (data && typeof data === 'object' && !Array.isArray(data)) {
-        scheduleData = data.value || data.data || data.schedules || data.activities || Object.values(data)[0];
-    }
+    let scheduleData = data.value || data.data || data.schedules || data.activities || data;
+    if (!Array.isArray(scheduleData)) scheduleData = Object.values(data)[0];
 
     if (!Array.isArray(scheduleData) || scheduleData.length === 0) {
         content.innerHTML = '<div class="error">Ingen aktiviteter fundet</div>';
@@ -44,102 +39,68 @@ function displaySchedule(data) {
     }
 
     const now = new Date();
+    scheduleData.sort((a,b) => new Date(a.StartDate) - new Date(b.StartDate));
+
     const todayStr = now.toISOString().split('T')[0];
+    const todays = scheduleData.filter(x => x.StartDate.startsWith(todayStr));
 
-    // Sort by start time
-    scheduleData.sort((a, b) => new Date(a.StartDate) - new Date(b.StartDate));
+    let html = "";
 
-    // Only today's lessons
-    const todaysClasses = scheduleData.filter(item =>
-        new Date(item.StartDate).toISOString().split('T')[0] === todayStr
-    );
-
-    let html = '';
-
-    /* -------- 1. Ongoing Lessons -------- */
-    const ongoing = todaysClasses.filter(item => {
-        const start = new Date(item.StartDate);
-        const end = new Date(item.EndDate);
-        return now >= start && now <= end;
+    /* ---------- Ongoing ---------- */
+    const ongoing = todays.filter(item => {
+        const s = new Date(item.StartDate);
+        const e = new Date(item.EndDate);
+        return now >= s && now <= e;
     });
 
     if (ongoing.length > 0) {
-        html += `<h2 class="section-title">📘 Igangværende Lektioner</h2>`;
-        html += ongoing.map(item => makeCard(item, true)).join('');
+        html += `<h2 class="section-title">📘 Igangværende</h2>`;
+        html += ongoing.map(item => makeCard(item)).join('');
         content.innerHTML = html;
         return;
     }
 
-    /* -------- 2. Next group of SAME start time -------- */
-    const upcoming = todaysClasses.filter(item => new Date(item.StartDate) > now);
-
+    /* ---------- Next Block ---------- */
+    const upcoming = todays.filter(item => new Date(item.StartDate) > now);
     if (upcoming.length > 0) {
         const nextStart = new Date(upcoming[0].StartDate).getTime();
-        const nextBlock = upcoming.filter(item =>
-            new Date(item.StartDate).getTime() === nextStart
-        );
+        const nextBlock = upcoming.filter(item => new Date(item.StartDate).getTime() === nextStart);
 
-        html += `<h2 class="section-title">Næste Lektion</h2>`;
-        html += nextBlock.map(item => makeCard(item, false)).join('');
+        html += `<h2 class="section-title">Næste Lektioner</h2>`;
+        html += nextBlock.map(item => makeCard(item)).join('');
         content.innerHTML = html;
         return;
     }
 
-    /* -------- 3. If nothing left today → show tomorrow -------- */
-    const future = scheduleData.filter(item => new Date(item.StartDate) > now);
-
-    if (future.length > 0) {
-        const nextStart = new Date(future[0].StartDate).getTime();
-        const nextBlock = future.filter(item =>
-            new Date(item.StartDate).getTime() === nextStart
-        );
-
-        html += `<h2 class="section-title">I Morgen</h2>`;
-        html += nextBlock.map(item => makeCard(item, false)).join('');
-    } else {
-        html = `<h2 class="section-title">🎓 Ingen kommende lektioner</h2>`;
-    }
-
+    html = `<h2 class="section-title">🎓 Ingen flere lektioner i dag</h2>`;
     content.innerHTML = html;
 }
 
 /* --- Card Builder --- */
-function makeCard(item, isOngoing) {
+function makeCard(item) {
     const start = new Date(item.StartDate);
     const end = new Date(item.EndDate);
     const now = new Date();
     const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
 
-    // Farver til hold
-    const colorMap = [
-        { pattern: /GRAFISK TEKNIKER/i, color: "#E38B29" },
-        { pattern: /MEDIE GRAFIKER/i, color: "#C44536" },
-        { pattern: /WEB UDVIKLER/i, color: "#2E4057" },
-    ];
-    const accentObj = colorMap.find(entry => entry.pattern.test((item.Team || "").trim()));
-    const accent = accentObj ? accentObj.color : "#293646";
-
-    const subject = item.Subject || 'Intet fag';
-    const room = item.Room ? `Lokale: ${item.Room}` : '';
-    const team = item.Team ? `Hold: ${item.Team}` : '';
-    const statusText = isOngoing
-        ? `⏱ ${minutesLeft} min tilbage`
-        : `Starter kl. ${formatTime(item.StartDate)}`;
+    const subject = item.Subject || "Ukendt fag";
+    const room = item.Room ? `Lokale: ${item.Room}` : "";
+    const team = item.Team ? `Hold: ${item.Team}` : "";
+    const statusText = now >= start && now <= end ? `⏱ ${minutesLeft} min tilbage` : `Starter kl. ${formatTime(item.StartDate)}`;
 
     return `
-        <div class="schedule-card ${isOngoing ? 'ongoing' : 'upcoming'}">
+        <div class="schedule-card">
             <div class="schedule-row">
-                <div class="schedule-accent" style="background:${accent};"></div>
                 <div class="schedule-title">${subject}</div>
-                ${room ? `<div class="schedule-room">${room}</div>` : ''}
-                ${team ? `<div class="schedule-team">${team}</div>` : ''}
+                ${room ? `<div class="schedule-room">${room}</div>` : ""}
+                ${team ? `<div class="schedule-team">${team}</div>` : ""}
                 <div class="schedule-status">${statusText}</div>
             </div>
         </div>
     `;
 }
 
-/* --- Auto Refresh Every Minute --- */
+/* --- Auto Refresh --- */
 document.addEventListener('DOMContentLoaded', () => {
     fetchSchedule();
     setInterval(fetchSchedule, 60 * 1000);

@@ -93,7 +93,7 @@ container.innerHTML = `<h2>Bustider</h2>` + futureDepartures
       <div class="card departure-card" style="${highlightStyle}">
         <h4>${name} ${type ? `(${type})` : ""}</h4>
         ${direction ? `<div><strong></strong> ${direction}</div>` : ""}
-        ${time ? `<div><strong></strong> ${time} ${delay}</div>` : ""}
+        ${time ? `<div><strong></strong>${delay} ${time} </div>` : ""}
       </div>
     `;
   })
