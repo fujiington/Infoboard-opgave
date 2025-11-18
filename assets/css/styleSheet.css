@@ -10,11 +10,14 @@
 *{ 
   box-sizing: border-box; 
   margin:0; padding:0; 
-  font-family: "Inter", sans-serif; }
+  font-family: "Inter", sans-serif; 
+}
+
 html, body{ 
-  height:100%; }
-html, body { 
-  overflow: hidden !important; }
+  height:100%; 
+  overflow: hidden !important;
+}
+
 body{
   display: grid;
   height: 100vh;
@@ -31,8 +34,8 @@ body{
   color: #111;
 }
 
-/* EVERY SECTION, EXLUDING SUBROW PANELS GETS THIS STYLE */
-#news, #content, #menu, #departures, #getCopenhagenTime {
+/* EVERY SECTION GETS PANEL STYLING + WHITE OUTLINE */
+#news, #content, #menu, #departures, #getCopenhagenTime, #getCopenhagenDate, #weather, #wc {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -48,12 +51,15 @@ body{
   overflow: visible;
 }
 
-/* GLOBAL outline for those big panels */
+/* WHITE OUTLINE FOR ALL SECTIONS */
 #news::before,
 #content::before,
 #menu::before,
 #departures::before,
-#getCopenhagenTime::before {
+#getCopenhagenTime::before,
+#getCopenhagenDate::before,
+#weather::before,
+#wc::before {
   content: "";
   position: absolute;
   inset: var(--outline-offset);
@@ -72,24 +78,19 @@ body{
 #content { grid-area: content; }
 
 /* -----------------------------
-   SubRow container (ingen outline selv)
-   Indholdet (date, weather, wc) får panel-styling individuelt
+   SubRow container
 ------------------------------ */
 #getCopenhagenSubRow{
   display: flex;
   justify-content: center;
-  align-items: stretch; /* ensures children stretch to full height */
+  align-items: center; /* center vertically instead of stretching */
   gap: 2rem;
-  grid-area: getCopenhagenSubRow;
-  height: 100%;
-  padding: 12px;
+  height: auto; /* allow panels to set their own height */
+  padding: 12px 0; /* vertical padding smaller */
   overflow: visible;
 }
 
-/* INDIVIDUELLE PANELER I SUBROW:
-   #getCopenhagenDate, #weather og #wc får hver deres panelstil og outline
-*/
-/* Fælles panel-look til de tre felter */
+/* Subrow panels: equal size */
 #getCopenhagenDate,
 #weather,
 #wc {
@@ -98,79 +99,53 @@ body{
   justify-content: center;
   background: var(--panel-bg);
   border-radius: 20px;
-  padding: 0.3rem 0.5rem;
+  padding: 0.4rem 1rem; /* more horizontal padding for width, smaller vertical padding for height */
   border: 2px solid var(--panel-border);
   position: relative;
   z-index: 1;
-  min-width: 0;
-  flex: 1;             /* grow equally */
-  height: 100%;        /* fill parent height */
+  flex: 1.2; /* slightly wider relative to spacing */
+  height: 60px; /* fixed shorter height */
   overflow: visible;
 }
 
-/* Outline for date og weather på ::before */
-#getCopenhagenDate::before,
-#weather::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--outline-offset));
-  border-radius: calc(var(--outline-radius) - 26px); /* small radius to match smaller box */
-  border: 1px solid #ffffff;
-  pointer-events: none;
-  z-index: 0;
-}
 
-/* WC */
-#wc{
-  flex: 1;
+/* WC: two SVG icons inside */
+#wc {
   display: flex;
-  align-items: center;    /* centrér vertikalt */
-  justify-content: center; /* centrér horisontalt */
-  background: var(--panel-bg);
-  border-radius: 20px;
-  padding: 0.2rem 0.2rem;
-  border: 2px solid var(--panel-border);
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-  height: 100%;
-  overflow: visible;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 0.4rem 1rem;
 }
 
-/* WC har allerede en tekst i ::before (animation). Derfor bruger vi ::after til outline */
-#wc::after {
-  content: "";
-  position: absolute;
-  inset: calc(var(--outline-offset));
-  border-radius: calc(var(--outline-radius) - 26px);
-  border: 1px solid #ffffff;
-  pointer-events: none;
-  z-index: 0;
+.wc-icon svg {
+  display: block;
+  width: auto;
+  height: 70%; /* slightly smaller to fit reduced height */
+}
+.wc-arrow svg {
+  height: 90%;   /* bigger than the mail icon */
 }
 
-/* WC tekst-animation bevares på ::before */
-#wc::before {
-  content: "🚻🡨";
+.wc-mail svg {
   animation: wcBlink 3s infinite;
-  position: relative;
-  z-index: 2; /* over outline og over selve wc-panel-text om nødvendigt */
-  padding: 1rem 1.2rem;
-  font-size: 0.9rem;
-}
-@keyframes wcBlink{ 
-  0%,100%{ opacity:1; } 
-  50%{ opacity:0.4; } 
+  width: auto;
 }
 
-/* Styling for indhold i date/weather/wc (justér som du vil) */
-/* DATE */
+@keyframes wcBlink { 
+  0%, 100% { opacity: 1; } 
+  50% { opacity: 0.4; } 
+}
+
+/* DATE PANEL */
 #getCopenhagenDate { 
   font-size: 1rem; 
   font-weight: 600;  
   text-align: center; 
-  padding: 0.5rem 0.8rem; 
 }
-/* WEATHER */
+
+/* WEATHER PANEL */
 #weather { 
   font-size: 0.95rem; 
   font-weight: 500; 
@@ -179,19 +154,11 @@ body{
   align-items: center; 
   justify-content: center; 
 }
-#weather .weather-city{ 
-  font-weight: 500; 
-  margin-bottom: 0; 
-}
-#weather .weather-icon{ 
-  font-size: 1.1rem; 
-  margin-bottom: 0; 
-}
-#weather .weather-temp{ 
-  font-weight: 400; 
-}
+#weather .weather-city{ font-weight: 500; }
+#weather .weather-icon{ font-size: 1.1rem; }
+#weather .weather-temp{ font-weight: 400; }
 
-/* TIME, NEWS, MENU, CONTENT osv */
+/* TIME PANEL */
 #getCopenhagenTime{
   font-size: 4rem;
   font-weight: 500;
@@ -199,20 +166,15 @@ body{
   padding: 1.5rem;
   text-align: center;
 }
-/* MENU */
+
+/* MENU PANEL */
 #menu{
-  display: flex !important;
-  flex-direction: column !important;
+  display: flex;
+  flex-direction: column;
   gap: 15px;
   padding: 20px;
-  margin: 0;
-  align-content: start;
 }
-#menu h2{ 
-  text-align: center; 
-  font-size: 48px; 
-  font-weight: 400; 
-}
+#menu h2{ text-align: center; font-size: 48px; font-weight: 400; }
 #menu .card{ 
   display: flex; 
   justify-content: space-between; 
@@ -225,36 +187,20 @@ body{
   width: 100%;
 }
 #menu .card.today {
-  background: #da842884;        /* warm highlight */
-  border: 2px solid rgba(255, 255, 255, 0.8);  /* subtle bright edge */
+  background: #da842884;
+  border: 2px solid rgba(255, 255, 255, 0.8);
 }
- 
-#menu .card.today h4 {
-  font-weight: 700;
-  color: #000;
-}
- 
-#menu .card.today .dishes {
-  font-weight: 500;
-  color: #000;
-}
-/* NEWS */
+#menu .card.today h4 { font-weight: 700; color: #000; }
+#menu .card.today .dishes { font-weight: 500; color: #000; }
+
+/* NEWS PANEL */
 #news{
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  width: 100%;
-  max-height: 100%;
-  overflow: visible;
 }
-#news h2{ 
-  text-align: center; 
-  font-size: 48px; 
-  font-weight: 400; 
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
+#news h2{ text-align: center; font-size: 48px; font-weight: 400; margin-top:0; margin-bottom:1rem;}
 #news .card.fade-in{
   display: flex; 
   flex-direction: column; 
@@ -262,52 +208,26 @@ body{
   background: rgba(231,156,29, 0.44);
   padding: 1rem; 
   gap: 0.5rem; 
-  max-height: 50vh; 
-  overflow: visible;
 }
-#news .card.fade-in a{ 
-  text-decoration: none; 
-  color: black; 
-}
+#news .card.fade-in a{ text-decoration: none; color: black; }
 #news .news-pair{
   display: flex; 
   flex-direction: column;
   justify-content: space-between; 
   gap: 10px;
 }
+
 /* CONTENT PANEL */
 #content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  overflow: hidden;
   padding: 20px;
   max-height: 100%;
   position: relative;
-  background: var(--panel-bg);
-  border-radius: var(--panel-radius);
-  padding: 30px;
-  border: 4px solid var(--panel-border);
 }
-#content::before {
-  content: "";
-  position: absolute;
-  inset: var(--outline-offset);
-  border-radius: var(--outline-radius);
-  border: 1px solid #ffffff;
-  pointer-events: none;
-  z-index: 0;
-}
-#content h2{ 
-  text-align: center;
-  font-size: 48px; 
-  font-weight:400; 
-  margin-top: 0;
-  margin-bottom: 1rem;
-  max-width: 100%;
-  overflow-y: hidden;
-}
+#content h2{ text-align: center; font-size: 48px; font-weight: 400; margin-bottom: 1.8rem; }
 
 /* SCHEDULE CARDS */
 #content .schedule-card{ 
@@ -322,7 +242,7 @@ body{
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* Cycle colors: 1=yellow, 2=red, 3=blue */
+/* Cycle colors for schedule cards */
 #content .schedule-card:nth-child(3n+1) { background-color: #C48827; }
 #content .schedule-card:nth-child(3n+2) { background-color: #CB282D; }
 #content .schedule-card:nth-child(3n+3) { background-color: #293646; }
@@ -332,7 +252,6 @@ body{
   align-items: center; 
   width: 100%; 
   gap: 10px; 
-  flex-wrap: nowrap;
   color: #fff; 
   padding: 8px 0; 
   border-radius: 10px; 
@@ -342,34 +261,23 @@ body{
 .schedule-title, .schedule-room, .schedule-team, .schedule-status {
   flex: 1;
 }
-/* DEPARURES */
+
+/* DEPARTURES PANEL */
 #departures{ 
-  display: flex;                 /* <-- gør den til flex-container   */
-  flex-direction: column;        /* <-- læg alle .card i en kolonne  */
+  display: flex;
+  flex-direction: column;
   justify-content: flex-start;
-  align-items: stretch;          /* <-- gør kortene lige brede       */
+  align-items: stretch;
   gap: 10px; 
   border-radius: 40px; 
   background: rgba(255,255,255,0.79); 
   border: 3px solid rgba(255,255,255,0.789); 
   box-shadow: inset 0 0 8px rgba(255,255,255,0.4), 0 0 10px rgba(0,0,0,0.1); 
-  backdrop-filter: blur(8px); 
   padding: 1rem; 
 }
-#departures h2{ 
-  text-align: center;
-  font-size: 48px; 
-  font-weight: 400; 
-  margin-top: 0;
-}
-#departures .card{ 
-  display: flex; 
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(41,54,70,0.20); 
-  border-radius: 20px; 
-  padding: 10px 15px; 
-}
+#departures h2{ text-align: center; font-size: 48px; font-weight: 400; }
+#departures .card{ display: flex; justify-content: space-between; align-items: center; background: rgba(41,54,70,0.20); border-radius: 20px; padding: 10px 15px; }
+
 /* MEDIA QUERIES */
 @media (max-width:1000px){
   body{
@@ -402,11 +310,6 @@ body{
     padding: 0.8rem; 
     gap: 0.8rem; 
   }
-  h2{ 
-    font-size: 1rem; 
-  }
-  p{ 
-    font-size: 0.95rem; 
-  }
+  h2{ font-size: 1rem; }
+  p{ font-size: 0.95rem; }
 }
-/* END OF FILE */

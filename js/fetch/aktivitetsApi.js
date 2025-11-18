@@ -13,7 +13,7 @@ async function fetchSchedule() {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error(`HTTP fejl! status: ${response.status}`);
         const data = await response.json();
-        displaySchedule(data);
+        displayUpcomingSchedule(data);
     } catch (error) {
         content.innerHTML = `
             <div class="error">
@@ -26,8 +26,8 @@ async function fetchSchedule() {
     }
 }
 
-/* --- Display Schedule --- */
-function displaySchedule(data) {
+/* --- Display Upcoming Schedule --- */
+function displayUpcomingSchedule(data) {
     const content = document.getElementById('content');
 
     let scheduleData = data.value || data.data || data.schedules || data.activities || data;
@@ -44,35 +44,22 @@ function displaySchedule(data) {
     const todayStr = now.toISOString().split('T')[0];
     const todays = scheduleData.filter(x => x.StartDate.startsWith(todayStr));
 
-    let html = "";
-
-    /* ---------- Ongoing ---------- */
-    const ongoing = todays.filter(item => {
-        const s = new Date(item.StartDate);
-        const e = new Date(item.EndDate);
-        return now >= s && now <= e;
-    });
-
-    if (ongoing.length > 0) {
-        html += `<h2 class="section-title">📘 Igangværende</h2>`;
-        html += ongoing.map(item => makeCard(item)).join('');
-        content.innerHTML = html;
+    if (todays.length === 0) {
+        content.innerHTML = '<h2 class="section-title">🎓 Ingen lektioner i dag</h2>';
         return;
     }
 
-    /* ---------- Next Block ---------- */
+    // Filter ONLY upcoming classes
     const upcoming = todays.filter(item => new Date(item.StartDate) > now);
-    if (upcoming.length > 0) {
-        const nextStart = new Date(upcoming[0].StartDate).getTime();
-        const nextBlock = upcoming.filter(item => new Date(item.StartDate).getTime() === nextStart);
 
-        html += `<h2 class="section-title">Næste Lektioner</h2>`;
-        html += nextBlock.map(item => makeCard(item)).join('');
-        content.innerHTML = html;
+    if (upcoming.length === 0) {
+        content.innerHTML = '<h2 class="section-title">🎓 Ingen flere lektioner i dag</h2>';
         return;
     }
 
-    html = `<h2 class="section-title">🎓 Ingen flere lektioner i dag</h2>`;
+    let html = `<h2 class="section-title">Næste Lektioner</h2>`;
+    html += upcoming.map(item => makeCard(item)).join('');
+
     content.innerHTML = html;
 }
 
@@ -80,13 +67,11 @@ function displaySchedule(data) {
 function makeCard(item) {
     const start = new Date(item.StartDate);
     const end = new Date(item.EndDate);
-    const now = new Date();
-    const minutesLeft = Math.max(0, Math.round((end - now) / 60000));
-
     const subject = item.Subject || "Ukendt fag";
     const room = item.Room ? `Lokale: ${item.Room}` : "";
     const team = item.Team ? `Hold: ${item.Team}` : "";
-    const statusText = now >= start && now <= end ? `⏱ ${minutesLeft} min tilbage` : `Starter kl. ${formatTime(item.StartDate)}`;
+
+    const statusText = `Starter kl. ${formatTime(item.StartDate)}`;
 
     return `
         <div class="schedule-card">
@@ -100,8 +85,8 @@ function makeCard(item) {
     `;
 }
 
-/* --- Auto Refresh --- */
+/* --- Auto Refresh every minute --- */
 document.addEventListener('DOMContentLoaded', () => {
     fetchSchedule();
-    setInterval(fetchSchedule, 60 * 1000);
+    setInterval(fetchSchedule, 60 * 1000); // refresh every 60 seconds
 });
