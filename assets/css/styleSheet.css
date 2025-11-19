@@ -266,9 +266,15 @@ body{
 }
 
 /* Cycle colors for schedule cards */
-#content .schedule-card:nth-child(3n+1) { background-color: #C48827; }
-#content .schedule-card:nth-child(3n+2) { background-color: #CB282D; }
-#content .schedule-card:nth-child(3n+3) { background-color: #293646; }
+/* ===== EDU COLORS ===== */
+.schedule-card.edu-praktik { background-color: #cb282d !important; }    /* Red */
+.schedule-card.edu-grafisk { background-color: #d79e5d !important; }    /* Yellow */
+.schedule-card.edu-web      { background-color: #1c2b36 !important; }    /* Blue */
+.schedule-card.edu-tryk     { background-color: #293646 !important; }    /* Orange */
+.schedule-card.edu-dataservice { background-color: #e79c1d !important; }
+.schedule-card.edu-studietid  { background-color: #293646 !important; }
+
+
 
 
 /* Ensure schedule cards allow proper centering */
@@ -326,8 +332,8 @@ body{
   margin-bottom: 1.8rem; 
 }
 #departures .card {
-  min-height: 90px;
-  height: 40px;          /* fixed height */
+  min-height: 60px;
+  height: 20px;          /* fixed height */
   display: flex;
   align-items: center;
   justify-content: space-between;

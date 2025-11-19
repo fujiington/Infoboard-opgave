@@ -69,18 +69,34 @@ function displayNextLectures(data) {
 }
 
 /* --- Build Lesson Card --- */
+/* --- Determine education color class --- */
+function getEducationClass(item) {
+    const text = `${item.Subject || ""} ${item.Team || ""}`.toLowerCase();
+
+    if (text.includes("praktik")) return "edu-praktik";
+    if (text.includes("grafisk")) return "edu-grafisk";
+    if (text.includes("web") || text.includes("webudvikler")) return "edu-web";
+    if (text.includes("tryk")) return "edu-tryk";
+
+    // NEW
+    if (text.includes("dataservice")) return "edu-dataservice";
+    if (text.includes("studie")) return "edu-studietid";
+
+    return ""; // default
+}
+
+
 function makeCard(item, now) {
-    const start = new Date(item.StartDate);
-    const end = new Date(item.EndDate);
     const subject = item.Subject || "Ukendt fag";
     const room = item.Room ? `Lokale: ${item.Room}` : "";
     const team = item.Team ? `Hold: ${item.Team}` : "";
 
-    // Status text
     const statusText = `kl. ${formatTime(item.StartDate)}`;
 
+    const eduClass = getEducationClass(item); // << NEW
+
     return `
-        <div class="schedule-card">
+        <div class="schedule-card ${eduClass}">
             <div class="schedule-row">
                 <div class="schedule-title">${subject}</div>
                 ${room ? `<div class="schedule-room">${room}</div>` : ""}
@@ -90,6 +106,7 @@ function makeCard(item, now) {
         </div>
     `;
 }
+
 
 /* --- Auto Refresh every minute --- */
 document.addEventListener('DOMContentLoaded', () => {

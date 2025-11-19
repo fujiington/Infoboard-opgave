@@ -52,7 +52,7 @@ async function displayDepartures() {
 
         const [hours, minutes] = timeStr.split(":").map(Number);
         const depDateTime = new Date(
-          new Date(dateStr).setHours(hours, minutes, 0, 0)
+          new Date(dateStr).setHours(hours, minutes,)
         );
 
         // Fix potential timezone mismatch by shifting to local Copenhagen time
@@ -74,7 +74,7 @@ async function displayDepartures() {
 container.innerHTML = `<h2>BUSTIDER</h2>` + futureDepartures
   .map((dep, index) => {  // Add index parameter
     const name = dep.name || dep.line || "Unknown";
-    const time = dep.rtTime || dep.time || "";
+    const time = (dep.rtTime || dep.time || "").slice(0, 5);
     const direction = dep.direction || "";
     const type = dep.type || "";
     const delay =
@@ -111,4 +111,4 @@ if (document.readyState === "loading") {
   displayDepartures();
 }
 
-setInterval(displayDepartures, 10 * 1000); // update every 30 seconds
+setInterval(displayDepartures, 1 * 1000); // update every 30 seconds
