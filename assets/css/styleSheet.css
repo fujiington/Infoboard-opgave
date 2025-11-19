@@ -30,7 +30,10 @@ body{
   grid-template-rows: 2fr 0.3fr 0.4fr;
   gap: 3rem;
   padding: 2rem;
-  background: linear-gradient(to bottom right, rgba(238, 70, 70, 0.822), rgba(231, 194, 29, 0.584)), url("../images/rlwMC5f.gif") center/cover no-repeat;
+
+  background: linear-gradient(to bottom right, rgba(222, 88, 48, 0.822), rgba(231, 194, 29, 0.584)),
+              url("../images/75baa74374264b924c9496b4412e7088.gif") center/cover no-repeat;
+  animation: slowMove 30s linear infinite;
   color: #111;
 }
 
@@ -217,7 +220,9 @@ body{
   text-align: center; 
   font-size: 48px; 
   font-weight: 400; 
-  margin: 1rem;}
+  margin: -1rem;
+  margin-bottom: 1rem;
+}
 #news .card.fade-in{
   display: flex; 
   flex-direction: column; 
