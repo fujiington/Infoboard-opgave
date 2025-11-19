@@ -77,7 +77,7 @@ function makeCard(item, now) {
     const team = item.Team ? `Hold: ${item.Team}` : "";
 
     // Status text
-    const statusText = `Starter ${formatDate(item.StartDate)} kl. ${formatTime(item.StartDate)}`;
+    const statusText = `kl. ${formatTime(item.StartDate)}`;
 
     return `
         <div class="schedule-card">

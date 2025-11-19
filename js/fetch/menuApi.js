@@ -117,3 +117,22 @@ if (document.readyState === 'loading') {
 } else {
   displayMenu();
 }
+function autoUpdateAtMidnight(callback) {
+  function schedule() {
+    const now = new Date();
+    const next = new Date();
+
+    // Set next to exactly midnight
+    next.setHours(24, 0, 0, 0);
+
+    const msUntilMidnight = next - now;
+
+    setTimeout(() => {
+      callback();   // run your update function
+      schedule();   // schedule next midnight update
+    }, msUntilMidnight);
+  }
+
+  schedule();
+}
+autoUpdateAtMidnight(displayMenu);
